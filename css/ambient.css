@@ -1,0 +1,216 @@
+/* ==========================================================================
+   ELDENTRACK - ADVANCED AMBIENT & PARTICLES SYSTEM
+   Golden Grace Embers, Runic Glows & Build Requirement Matcher
+   ========================================================================== */
+
+/* Grace Particles Background Canvas */
+#grace-particles-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.65;
+}
+
+/* --- Region Strip Carousel --- */
+.region-strip-container {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 6px 2px 14px 2px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gold-muted) transparent;
+}
+
+.region-strip-card {
+  flex: 0 0 165px;
+  background: linear-gradient(145deg, rgba(24, 28, 37, 0.85) 0%, rgba(12, 14, 18, 0.95) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.16);
+  border-radius: var(--radius-lg);
+  padding: 12px 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all var(--dur-normal) var(--ease-smooth);
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+}
+
+.region-strip-card:hover {
+  border-color: var(--gold-primary);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px var(--gold-glow);
+}
+
+.region-strip-card.active {
+  border-color: var(--gold-bright);
+  background: linear-gradient(145deg, rgba(35, 42, 56, 0.95) 0%, rgba(212, 175, 55, 0.12) 100%);
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+
+.region-strip-card.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gold-bright);
+  box-shadow: 0 0 8px var(--gold-bright);
+}
+
+.region-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.region-card-icon {
+  font-size: 1.3rem;
+}
+
+.region-card-name {
+  font-family: var(--font-serif);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.region-card-progress {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--gold-light);
+}
+
+/* --- Build Matcher & Quick Bar --- */
+.build-bar-wrapper {
+  background: rgba(18, 21, 28, 0.8);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.build-presets-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.build-preset-btn {
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all var(--dur-fast);
+}
+
+.build-preset-btn:hover {
+  color: var(--gold-light);
+  border-color: var(--gold-primary);
+}
+
+.build-preset-btn.active {
+  background: var(--gold-primary);
+  color: var(--bg-obsidian);
+  font-weight: 600;
+  border-color: var(--gold-bright);
+}
+
+.stat-inputs-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.stat-input-box {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--glass-border);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.stat-input-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--gold-muted);
+  font-weight: 600;
+}
+
+.stat-input-val {
+  width: 36px;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  outline: none;
+}
+
+/* Usability Badge on Cards */
+.wieldable-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.wieldable-badge.can-wield {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.35);
+}
+
+.wieldable-badge.cannot-wield {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+/* Sound Toggle Button */
+.sound-toggle-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  padding: 6px 10px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  transition: all var(--dur-fast);
+}
+
+.sound-toggle-btn:hover {
+  border-color: var(--gold-primary);
+  color: var(--gold-bright);
+}

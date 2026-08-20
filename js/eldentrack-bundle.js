@@ -1,6 +1,6 @@
 /* ==========================================================================
-   ELDENTRACK - UNIVERSAL STANDALONE BUNDLE
-   Zero-dependency, CORS-safe bundle that runs instantly on file:/// and HTTP
+   ELDENTRACK - ADVANCED STANDALONE ENGINE (v2.5)
+   Zero-lag Debounced Search, Grace Particles, Build Calculator & Region Strip
    ========================================================================== */
 
 (function () {
@@ -8,170 +8,33 @@
 
   // --- 1. CATEGORIES DATA ---
   const CATEGORIES = [
-    {
-      id: 'all',
-      name: 'Todos os Segredos',
-      icon: '✨',
-      description: 'Catálogo unificado de todos os itens, magias e segredos.',
-      color: '#d4af37'
-    },
-    {
-      id: 'weapons',
-      name: 'Armas & Selos',
-      icon: '⚔️',
-      description: 'Espadas colossais, katanas, cajados brilhantes e selos sagrados.',
-      color: '#e63946',
-      subcategories: ['Espadas Colossais', 'Katanas', 'Cajados Glintstone', 'Selos Sagrados', 'Adagas', 'Escudos Grandes']
-    },
-    {
-      id: 'talismans',
-      name: 'Talismãs Lendários',
-      icon: '💍',
-      description: 'Acessórios lendários que alteram atributos e concedem poderes únicos.',
-      color: '#ff9d00',
-      subcategories: ['Lendários', 'Aumento de Dano', 'Defensivos', 'Cura & FP', 'Atributos']
-    },
-    {
-      id: 'spells',
-      name: 'Magias & Encantamentos',
-      icon: '🔮',
-      description: 'Feitiçarias primordiais dos eruditos de Raya Lucaria e incantações divinas.',
-      color: '#38bdf8',
-      subcategories: ['Feitiçarias Primevas', 'Encantamentos dos Dragões', 'Chama Frenética', 'Gravidade', 'Linhagem Divina']
-    },
-    {
-      id: 'ashes',
-      name: 'Cinzas da Guerra',
-      icon: '🗡️',
-      description: 'Habilidades lendárias e afinidades de combate para armas.',
-      color: '#bd6eff',
-      subcategories: ['Afinidade Pesada', 'Afinidade Afiada', 'Afinidade Sangue', 'Afinidade Mágica', 'Afinidade Fogo']
-    },
-    {
-      id: 'key_items',
-      name: 'Itens Chave & Lágrimas',
-      icon: '🗝️',
-      description: 'Lágrimas larvais para renascimento, pedras de memória e chaves de pedra.',
-      color: '#48a9fe',
-      subcategories: ['Lágrimas Larvais', 'Pedras de Memória', 'Fragmentos de Scadutree', 'Chaves de Espada de Pedra', 'Sementes Douradas']
-    },
-    {
-      id: 'armor',
-      name: 'Armaduras & Elmos',
-      icon: '🛡️',
-      description: 'Conjuntos de campeões, armaduras lendárias e elmos com bônus ocultos.',
-      color: '#a2adb9',
-      subcategories: ['Conjuntos Pesados', 'Mantos de Feiticeiro', 'Elmos Especiais', 'Conjuntos de Chefes']
-    },
-    {
-      id: 'cookbooks',
-      name: 'Livros & Pedras Draconianas',
-      icon: '📜',
-      description: 'Manuais de artesanato e pedras antigas de forja máxima (+25 / +10).',
-      color: '#10b981',
-      subcategories: ['Pedras Draconianas', 'Manuais de Guerreiro', 'Manuais de Artesão', 'Manuais do DLC']
-    },
-    {
-      id: 'bosses',
-      name: 'Chefes & Lembranças',
-      icon: '👑',
-      description: 'Semideuses, portadores de Grandes Runas e ameaças lendárias.',
-      color: '#f59e0b',
-      subcategories: ['Portadores de Runa', 'Lembranças', 'Dragões Antigos', 'Chefes do Reino das Sombras']
-    }
+    { id: 'all', name: 'Todos os Segredos', icon: '✨', description: 'Catálogo unificado de todos os itens, magias e segredos.', color: '#d4af37' },
+    { id: 'weapons', name: 'Armas & Selos', icon: '⚔️', description: 'Espadas colossais, katanas, cajados brilhantes e selos sagrados.', color: '#e63946' },
+    { id: 'talismans', name: 'Talismãs Lendários', icon: '💍', description: 'Acessórios lendários que alteram atributos e concedem poderes únicos.', color: '#ff9d00' },
+    { id: 'spells', name: 'Magias & Encantamentos', icon: '🔮', description: 'Feitiçarias primordiais de Raya Lucaria e incantações divinas.', color: '#38bdf8' },
+    { id: 'ashes', name: 'Cinzas da Guerra', icon: '🗡️', description: 'Habilidades lendárias e afinidades de combate para armas.', color: '#bd6eff' },
+    { id: 'key_items', name: 'Itens Chave & Lágrimas', icon: '🗝️', description: 'Lágrimas larvais para renascimento, pedras de memória e chaves de pedra.', color: '#48a9fe' },
+    { id: 'armor', name: 'Armaduras & Elmos', icon: '🛡️', description: 'Conjuntos de campeões, armaduras lendárias e elmos especiais.', color: '#a2adb9' },
+    { id: 'cookbooks', name: 'Livros & Pedras Draconianas', icon: '📜', description: 'Manuais de artesanato e pedras de forja máxima (+25 / +10).', color: '#10b981' },
+    { id: 'bosses', name: 'Chefes & Lembranças', icon: '👑', description: 'Semideuses, portadores de Grandes Runas e ameaças lendárias.', color: '#f59e0b' }
   ];
 
   // --- 2. REGIONS DATA ---
   const REGIONS = [
-    {
-      id: 'all_regions',
-      name: 'Todas as Regiões',
-      badge: '🌍',
-      description: 'Todas as regiões das Terras Intermédias e do Reino das Sombras.'
-    },
-    {
-      id: 'limgrave',
-      name: 'Limgrave & Península do Choro',
-      badge: '🌲',
-      description: 'O ponto de partida dos Maculados. Castelo Tempesvéu, Primeira Graça e Castelo Morne.',
-      icon: '🏰',
-      accentColor: '#4ade80'
-    },
-    {
-      id: 'liurnia',
-      name: 'Liurnia dos Lagos',
-      badge: '💧',
-      description: 'A terra das névoas aquáticas e da Academia de Feitiçaria de Raya Lucaria.',
-      icon: '🌙',
-      accentColor: '#38bdf8'
-    },
-    {
-      id: 'caelid',
-      name: 'Caelid & Monte Dragão Greyoll',
-      badge: '🩸',
-      description: 'Terras corrompidas pela Podridão Escarlate e arena do General Radahn.',
-      icon: '☣️',
-      accentColor: '#ef4444'
-    },
-    {
-      id: 'altus',
-      name: 'Platô Altus & Monte Gelmir',
-      badge: '🍁',
-      description: 'Planaltos dourados aos pés da Térvore e o covil herético da Mansão Vulcânica.',
-      icon: '🌋',
-      accentColor: '#f59e0b'
-    },
-    {
-      id: 'leyndell',
-      name: 'Leyndell, Capital Real',
-      badge: '👑',
-      description: 'A gloriosa metrópole do trono de Marika e o Santuário da Térvore.',
-      icon: '🏛️',
-      accentColor: '#d4af37'
-    },
-    {
-      id: 'mountaintops',
-      name: 'Montanhas dos Gigantes & Neve Consagrada',
-      badge: '❄️',
-      description: 'Picos gélidos onde arde a Forja dos Gigantes e caminhos secretos para a Árvore Sacra.',
-      icon: '🏔️',
-      accentColor: '#93c5fd'
-    },
-    {
-      id: 'underground',
-      name: 'Subterrâneo (Siofra, Ainsel & Deeproot)',
-      badge: '🌌',
-      description: 'Cidades Eternas de Nokron e Nokstella sob o firmamento estelar subterrâneo.',
-      icon: '⭐',
-      accentColor: '#a78bfa'
-    },
-    {
-      id: 'farum_azula',
-      name: 'Farum Azula Despedaçada',
-      badge: '🌪️',
-      description: 'Templo flutuante ancestral cercado por furacões e Dragões Antigos.',
-      icon: '⚡',
-      accentColor: '#c084fc'
-    },
-    {
-      id: 'haligtree',
-      name: 'Árvore Sacra de Miquella',
-      badge: '🌸',
-      description: 'O refúgio de Miquella e morada de Malenia, a Espada de Miquella.',
-      icon: '🗡️',
-      accentColor: '#f472b6'
-    },
-    {
-      id: 'shadow_realm',
-      name: 'Reino das Sombras (DLC)',
-      badge: '🌑',
-      description: 'Planície das Sepulturas, Belurat, Fortaleza das Sombras e Pináculo de Rauh.',
-      icon: '🔥',
-      accentColor: '#e63946'
-    }
+    { id: 'all_regions', name: 'Todas as Regiões', badge: '🌍', icon: '✨', description: 'Todas as regiões das Terras Intermédias e Reino das Sombras.' },
+    { id: 'limgrave', name: 'Limgrave & Península', badge: '🌲', icon: '🏰', description: 'Castelo Tempesvéu, Primeira Graça e Castelo Morne.', accentColor: '#4ade80' },
+    { id: 'liurnia', name: 'Liurnia dos Lagos', badge: '💧', icon: '🌙', description: 'Academia de Feitiçaria de Raya Lucaria e Platô Lunar.', accentColor: '#38bdf8' },
+    { id: 'caelid', name: 'Caelid & Greyoll', badge: '🩸', icon: '☣️', description: 'Terras corrompidas pela Podridão e arena de Radahn.', accentColor: '#ef4444' },
+    { id: 'altus', name: 'Platô Altus & Gelmir', badge: '🍁', icon: '🌋', description: 'Planaltos dourados e o covil da Mansão Vulcânica.', accentColor: '#f59e0b' },
+    { id: 'leyndell', name: 'Leyndell Real', badge: '👑', icon: '🏛️', description: 'A gloriosa metrópole do trono de Marika.', accentColor: '#d4af37' },
+    { id: 'mountaintops', name: 'Montanhas & Neve', badge: '❄️', icon: '🏔️', description: 'Picos gélidos, Forja dos Gigantes e Neve Consagrada.', accentColor: '#93c5fd' },
+    { id: 'underground', name: 'Subterrâneo (Siofra/Nokron)', badge: '🌌', icon: '⭐', description: 'Cidades Eternas sob o firmamento estelar subterrâneo.', accentColor: '#a78bfa' },
+    { id: 'farum_azula', name: 'Farum Azula', badge: '🌪️', icon: '⚡', description: 'Templo flutuante ancestral dos Dragões Antigos.', accentColor: '#c084fc' },
+    { id: 'haligtree', name: 'Árvore Sacra', badge: '🌸', icon: '🗡️', description: 'O refúgio de Miquella e morada de Malenia.', accentColor: '#f472b6' },
+    { id: 'shadow_realm', name: 'Reino das Sombras (DLC)', badge: '🌑', icon: '🔥', description: 'Planície das Sepulturas e Fortaleza das Sombras.', accentColor: '#e63946' }
   ];
 
-  // --- 3. ITEMS DATA ---
+  // --- 3. ITEMS DATABASE ---
   const ITEMS_DATA = [
     {
       id: 'w_dark_moon_greatsword',
@@ -186,8 +49,8 @@
       secretType: 'Quest NPC',
       requirements: { str: 16, dex: 11, int: 38, fai: 0, arc: 0 },
       lore: 'Uma espada de luz lunar legada pelas rainhas de Caria aos seus consortes. Imbuída com o gelo místico da lua.',
-      guide: 'Recompensa final da lendária linha de missões da Bruxa Ranni. Após derrotar Astel Filho das Estrelas Naturais, suba pelo elevador até o Platô Lunar, desça no buraco da Catedral de Manus Celes e coloque o Anel da Lua Sombria no dedo de Ranni.',
-      mapCoords: 'Sul do Platô de Liurnia, acessível apenas via missão subterrânea.'
+      guide: 'Recompensa final da linha de missões de Ranni. Após derrotar Astel, suba pelo elevador até o Platô Lunar e coloque o anel no dedo de Ranni.',
+      mapCoords: 'Sul do Platô de Liurnia.'
     },
     {
       id: 'w_rivers_of_blood',
@@ -201,8 +64,8 @@
       icon: '⚔️',
       secretType: 'Invasor NPC',
       requirements: { str: 12, dex: 18, int: 0, fai: 0, arc: 20 },
-      lore: 'Arma do espadachim Okina da Terra dos Juncos. Sua habilidade Empilhador de Cadáveres desencadeia lâminas de sangue que dilaceram a carne.',
-      guide: 'Ao se aproximar da Igreja do Repouso a leste das Montanhas dos Gigantes (pouco antes da Forja dos Gigantes), o invasor Sangrento Okina atacará você. Derrote-o para obter a Katana e a Máscara de Okina (faça antes de derrotar o Gigante de Fogo).',
+      lore: 'Arma de Okina da Terra dos Juncos. Sua habilidade Empilhador de Cadáveres desencadeia lâminas de sangue velozes.',
+      guide: 'Ao se aproximar da Igreja do Repouso a leste das Montanhas dos Gigantes, derrote o invasor Okina.',
       mapCoords: 'Leste do Lago Congelado, Montanha dos Gigantes.'
     },
     {
@@ -217,8 +80,8 @@
       icon: '🔥',
       secretType: 'Lembrança',
       requirements: { str: 22, dex: 15, int: 0, fai: 21, arc: 0 },
-      lore: 'Espada sagrada de Rykard, outrora Lorde Praetor, agora mesclada com a Serpente Devoradora de Deuses. Drena a vitalidade dos inimigos abatidos.',
-      guide: 'Derrote Rykard, Senhor da Blasfêmia na Mansão Vulcânica para receber a Lembrança do Blasfemo. Troque-a com Enia na Mesa-Redonda.',
+      lore: 'Espada sagrada de Rykard mesclada com a Serpente Devoradora de Deuses. Drena a vitalidade dos inimigos abatidos.',
+      guide: 'Derrote Rykard na Mansão Vulcânica e troque a Lembrança com Enia na Mesa-Redonda.',
       mapCoords: 'Profundezas da Mansão Vulcânica, Monte Gelmir.'
     },
     {
@@ -228,14 +91,14 @@
       category: 'weapons',
       subtype: 'Lanças Pesadas',
       region: 'leyndell',
-      location: 'Lança Monumental de Gransax (Leyndell Real)',
+      location: 'Lança Monumental de Gransax (Leyndell)',
       rarity: 'legendary',
       icon: '⚡',
       secretType: 'Exploração Secreta',
       requirements: { str: 20, dex: 40, int: 0, fai: 0, arc: 0 },
-      lore: 'Armamento lendário talhado da própria lança do Dragão Ancestral Gransax que destruiu as muralhas de Leyndell.',
-      guide: 'ATENÇÃO: Item perdível! Antes de queimar a Térvore e transformar a capital em cinzas, suba no corrimão da sacada do Santuário da Térvore, desça pelas asas da lança de pedra colossal fincada na cidade.',
-      mapCoords: 'Centro de Leyndell, na gigantesca lança de pedra.'
+      lore: 'Armamento lendário talhado da própria lança do Dragão Ancestral Gransax que perfurou as muralhas de Leyndell.',
+      guide: 'ATENÇÃO: Pegue antes de queimar a capital! Caminhe sobre a gigantesca lança de pedra fincada no centro da cidade.',
+      mapCoords: 'Centro de Leyndell, acima do pátio principal.'
     },
     {
       id: 'w_greatsword_guts',
@@ -249,9 +112,9 @@
       icon: '🗡️',
       secretType: 'Baú Escondido',
       requirements: { str: 31, dex: 12, int: 0, fai: 0, arc: 0 },
-      lore: 'Pedaço de ferro bruto e colossal em homenagem ao lendário espadachim negro Guts de Berserk.',
-      guide: 'Dentro do baú traseiro da carruagem preta abandonada na estrada principal de Caelid, cercada por Corvos Monstruosos e Cães Mutantes.',
-      mapCoords: 'Estrada a noroeste de Caelid, próximo à Graça \'Varanda com Vista para a Podridão\'.'
+      lore: 'Pedaço de ferro bruto e colossal em homenagem ao espadachim negro Guts de Berserk.',
+      guide: 'No baú da carruagem preta abandonada na estrada principal no noroeste de Caelid.',
+      mapCoords: 'Estrada de Caelid, próximo à Varanda com Vista para a Podridão.'
     },
     {
       id: 'w_bloodhounds_fang',
@@ -265,9 +128,9 @@
       icon: '🐾',
       secretType: 'Chefe de Masmorra',
       requirements: { str: 18, dex: 17, int: 0, fai: 0, arc: 0 },
-      lore: 'Espada curva afiada como garras de besta com sangramento inato e ataque de finta com salto acrobático devastador.',
-      guide: 'Derrote o Cavaleiro do Cão de Caça Darriwil na Cadeia Eterna ao sul de Limgrave. Chame Blaidd nas Ruínas de Mistwood para auxílio.',
-      mapCoords: 'Colina ao sul de Limgrave, antes da ponte para a Península do Choro.'
+      lore: 'Espada curva com sangramento inato e ataque de salto acrobático devastador.',
+      guide: 'Derrote o Cavaleiro Darriwil na Cadeia Eterna ao sul de Limgrave.',
+      mapCoords: 'Colina ao sul de Limgrave.'
     },
     {
       id: 'w_fingerprint_shield',
@@ -276,13 +139,13 @@
       category: 'weapons',
       subtype: 'Escudos Grandes',
       region: 'leyndell',
-      location: 'Fosso dos Três Dedos (Subterrâneo da Capital)',
+      location: 'Fosso dos Três Dedos (Esgotos de Leyndell)',
       rarity: 'legendary',
       icon: '🛡️',
       secretType: 'Exploração Secreta',
       requirements: { str: 48, dex: 0, int: 0, fai: 0, arc: 0 },
-      lore: 'O escudo mais resistente de todo o jogo, feito de uma lápide colossal queimada pela Chama Frenética dos Três Dedos.',
-      guide: 'Após derrotar Mohg o Agouro nos Esgotos de Leyndell, ataque o altar atrás dele para revelar uma passagem secreta e desça pelas lápides.',
+      lore: 'O escudo com maior estabilidade do jogo, forjado em uma lápide queimada pela Chama Frenética.',
+      guide: 'Após derrotar Mohg o Agouro nos Esgotos de Leyndell, ataque o altar secreto e desça pelas lápides.',
       mapCoords: 'Profundezas dos Esgotos de Leyndell.'
     },
     {
@@ -297,9 +160,9 @@
       icon: '⚔️',
       secretType: 'Exploração Secreta',
       requirements: { str: 10, dex: 13, int: 0, fai: 0, arc: 0 },
-      lore: 'Lâminas empunhadas ao contrário com ataques acrobáticos de esquiva e estocada veloz no flanco dos adversários.',
-      guide: 'Em um pequeno mausoléu ao ar livre a nordeste do primeiro Ponto de Graça da Planície das Sepulturas no Reino das Sombras.',
-      mapCoords: 'Nordeste da Planície das Sepulturas.'
+      lore: 'Lâminas empunhadas ao contrário com ataques acrobáticos de esquiva e estocada veloz no flanco.',
+      guide: 'Em um pequeno mausoléu ao ar livre a nordeste do primeiro Ponto de Graça da Planície das Sepulturas.',
+      mapCoords: 'Nordeste da Planície das Sepulturas, Reino das Sombras.'
     },
 
     // Talismãs
@@ -310,14 +173,14 @@
       category: 'talismans',
       subtype: 'Lendários',
       region: 'caelid',
-      location: 'Forte Faroth (Monte Dragão de Greyoll)',
+      location: 'Forte Faroth (Monte Dragão)',
       rarity: 'legendary',
       icon: '💍',
       secretType: 'Baú Escondido',
       requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-      lore: 'Talismã lendário com o brasão de Radagon. Concede +5 em Vigor, Tolerância, Força e Destreza ao custo de receber +15% de dano.',
-      guide: 'Entre no Forte Faroth em Caelid. Suba as escadas para o telhado, pule na abertura com tábuas e desça pelas vigas até a sala dos ratos.',
-      mapCoords: 'Forte Faroth, leste do Monte Dragão Greyoll.'
+      lore: 'Concede +5 em Vigor, Tolerância, Força e Destreza ao custo de receber +15% de dano.',
+      guide: 'No Forte Faroth em Caelid, pule na abertura do telhado e desça pelas vigas até o baú protegido por ratos.',
+      mapCoords: 'Forte Faroth, leste de Caelid.'
     },
     {
       id: 't_shard_of_alexander',
@@ -331,13 +194,13 @@
       icon: '🏺',
       secretType: 'Quest NPC',
       requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-      lore: 'Fragmento do Guerreiro Pote Alexander. Aumenta o poder de ataque de todas as Habilidades de Armas (Cinzas da Guerra) em 15%.',
+      lore: 'Aumenta o poder de ataque de todas as Habilidades de Armas (Cinzas da Guerra) em 15%.',
       guide: 'Complete a linha de missões de Alexander e duele com ele no topo da arena em ruínas de Farum Azula.',
-      mapCoords: 'Templo dos Dragões, Farum Azula Despedaçada.'
+      mapCoords: 'Templo dos Dragões, Farum Azula.'
     },
     {
       id: 't_bull_goats_talisman',
-      name: 'Talismã do Bode-Touro (Bull-Goat\'s Talisman)',
+      name: 'Talismã do Bode-Touro',
       nameEn: 'Bull-Goat\'s Talisman',
       category: 'talismans',
       subtype: 'Defensivos',
@@ -348,12 +211,12 @@
       secretType: 'Baú Escondido',
       requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
       lore: 'Aumenta o Equilíbrio (Poise) do usuário em +33%, impedindo interrupção de ataques.',
-      guide: 'Encontrado na Caverna do Dragão no norte do Monte Dragão Greyoll, protegido por ursos gigantes.',
+      guide: 'Na Caverna do Dragão ao norte de Caelid, em uma câmara com ursos gigantes.',
       mapCoords: 'Caverna do Dragão, norte de Caelid.'
     },
     {
       id: 't_green_turtle_talisman',
-      name: 'Talismã da Tartaruga Verde (Green Turtle Talisman)',
+      name: 'Talismã da Tartaruga Verde',
       nameEn: 'Green Turtle Talisman',
       category: 'talismans',
       subtype: 'Cura & FP',
@@ -364,7 +227,7 @@
       secretType: 'Baú Escondido',
       requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
       lore: 'Aumenta a velocidade de recuperação de Vigor (Stamina) em 17%.',
-      guide: 'Na Vila Summonwater em Limgrave, desça pelo porão trancado com estátua de espada de pedra (use 1 Chave) e abra o baú.',
+      guide: 'Na Vila Summonwater, desça pelo porão trancado com estátua de espada de pedra (use 1 Chave) e abra o baú.',
       mapCoords: 'Leste de Limgrave, Vila Summonwater.'
     },
 
@@ -382,7 +245,7 @@
       secretType: 'Quest NPC',
       requirements: { str: 0, dex: 0, int: 60, fai: 0, arc: 0 },
       lore: 'Feitiçaria primeva lendária que dispara um feixe contínuo avassalador de energia estelar.',
-      guide: 'Contorne o Monte Gelmir pela base. Próximo à Graça \'Primeval Sorcerer Azur\', interaja com o corpo do Mestre Azur.',
+      guide: 'Próximo à Graça \'Primeval Sorcerer Azur\' no Monte Gelmir, interaja com o corpo cristalizado do Mestre Azur.',
       mapCoords: 'Acampamento do Eremita, sul do Monte Gelmir.'
     },
     {
@@ -455,7 +318,7 @@
     // Itens Chave
     {
       id: 'k_flask_of_wondrous_physick',
-      name: 'Frasco de Elixir Magnífico (Flask of Wondrous Physick)',
+      name: 'Frasco de Elixir Magnífico',
       nameEn: 'Flask of Wondrous Physick',
       category: 'key_items',
       subtype: 'Frascos Sagrados',
@@ -603,111 +466,212 @@
     }
   ];
 
-  // --- 4. DATA SERVICE & COUNTS ---
-  const DataService = {
-    getCategories() { return CATEGORIES; },
-    getRegions() { return REGIONS; },
-    getAllItems() { return ITEMS_DATA; },
-    getCounts(acquiredIds = []) {
-      const total = ITEMS_DATA.length;
-      const acquired = acquiredIds.filter(id => ITEMS_DATA.some(item => item.id === id)).length;
-      const percentage = total > 0 ? Math.round((acquired / total) * 100) : 0;
+  // --- 4. BUILD PRESETS ---
+  const BUILD_PRESETS = [
+    { id: 'all_build', name: 'Todos os Itens', stats: { str: 99, dex: 99, int: 99, fai: 99, arc: 99 } },
+    { id: 'bleed_samurai', name: '🩸 Samurai de Sangue', stats: { str: 18, dex: 50, int: 9, fai: 15, arc: 45 } },
+    { id: 'moon_mage', name: '🌙 Mago da Lua', stats: { str: 16, dex: 18, int: 70, fai: 10, arc: 9 } },
+    { id: 'colossal_str', name: '🗡️ Guerreiro Colossal', stats: { str: 66, dex: 18, int: 9, fai: 15, arc: 9 } },
+    { id: 'golden_paladin', name: '☀️ Paladino Dourado', stats: { str: 30, dex: 15, int: 9, fai: 60, arc: 9 } }
+  ];
 
-      const byCategory = {};
-      CATEGORIES.forEach(cat => {
-        if (cat.id === 'all') {
-          byCategory['all'] = { total, acquired, percentage };
-          return;
+  // --- 5. DATA COUNTS HELPER ---
+  function getCounts(acquiredIds = []) {
+    const total = ITEMS_DATA.length;
+    const acquired = acquiredIds.filter(id => ITEMS_DATA.some(item => item.id === id)).length;
+    const percentage = total > 0 ? Math.round((acquired / total) * 100) : 0;
+
+    const byCategory = {};
+    CATEGORIES.forEach(cat => {
+      if (cat.id === 'all') { byCategory['all'] = { total, acquired, percentage }; return; }
+      const catItems = ITEMS_DATA.filter(i => i.category === cat.id);
+      const catAcquired = catItems.filter(i => acquiredIds.includes(i.id)).length;
+      byCategory[cat.id] = { total: catItems.length, acquired: catAcquired, percentage: catItems.length > 0 ? Math.round((catAcquired / catItems.length) * 100) : 0 };
+    });
+
+    const byRegion = {};
+    REGIONS.forEach(reg => {
+      if (reg.id === 'all_regions') { byRegion['all_regions'] = { total, acquired, percentage }; return; }
+      const regItems = ITEMS_DATA.filter(i => i.region === reg.id);
+      const regAcquired = regItems.filter(i => acquiredIds.includes(i.id)).length;
+      byRegion[reg.id] = { total: regItems.length, acquired: regAcquired, percentage: regItems.length > 0 ? Math.round((regAcquired / regItems.length) * 100) : 0 };
+    });
+
+    return { total, acquired, missing: total - acquired, percentage, byCategory, byRegion };
+  }
+
+  // --- 6. FILTERING & SEARCH ---
+  function filterItems(state) {
+    const q = (state.searchQuery || '').trim().toLowerCase();
+    const curStats = state.userStats;
+
+    return ITEMS_DATA.filter(item => {
+      if (state.activeCategory !== 'all' && item.category !== state.activeCategory) return false;
+      if (state.activeRegion !== 'all_regions' && item.region !== state.activeRegion) return false;
+
+      const isAcq = state.acquiredIds.includes(item.id);
+      const isWish = state.wishlistIds.includes(item.id);
+      if (state.statusFilter === 'acquired' && !isAcq) return false;
+      if (state.statusFilter === 'missing' && isAcq) return false;
+      if (state.statusFilter === 'wishlist' && !isWish) return false;
+
+      // Filtro de build (se marcado apenas compatíveis)
+      if (state.onlyUsableByBuild && curStats) {
+        const req = item.requirements || {};
+        if (req.str > curStats.str || req.dex > curStats.dex || req.int > curStats.int || req.fai > curStats.fai || req.arc > curStats.arc) {
+          return false;
         }
-        const catItems = ITEMS_DATA.filter(i => i.category === cat.id);
-        const catAcquired = catItems.filter(i => acquiredIds.includes(i.id)).length;
-        byCategory[cat.id] = {
-          total: catItems.length,
-          acquired: catAcquired,
-          percentage: catItems.length > 0 ? Math.round((catAcquired / catItems.length) * 100) : 0
-        };
-      });
+      }
 
-      const byRegion = {};
-      REGIONS.forEach(reg => {
-        if (reg.id === 'all_regions') {
-          byRegion['all_regions'] = { total, acquired, percentage };
-          return;
-        }
-        const regItems = ITEMS_DATA.filter(i => i.region === reg.id);
-        const regAcquired = regItems.filter(i => acquiredIds.includes(i.id)).length;
-        byRegion[reg.id] = {
-          total: regItems.length,
-          acquired: regAcquired,
-          percentage: regItems.length > 0 ? Math.round((regAcquired / regItems.length) * 100) : 0
-        };
-      });
+      if (q) {
+        const text = `${item.name} ${item.nameEn || ''} ${item.subtype || ''} ${item.location || ''} ${item.lore || ''} ${item.guide || ''}`.toLowerCase();
+        if (!text.includes(q)) return false;
+      }
+      return true;
+    });
+  }
 
-      return { total, acquired, missing: total - acquired, percentage, byCategory, byRegion };
-    }
-  };
+  // --- 7. STORAGE & STATE ---
+  const STORAGE_KEY = 'eldentrack_save_data_v2';
+  const Store = {
+    saveData: null,
+    acquiredIds: [],
+    wishlistIds: [],
+    activeCategory: 'all',
+    activeRegion: 'all_regions',
+    searchQuery: '',
+    statusFilter: 'all',
+    viewMode: 'grid',
+    selectedItem: null,
+    statsModalOpen: false,
+    soundEnabled: true,
+    activeBuildId: 'all_build',
+    userStats: { str: 99, dex: 99, int: 99, fai: 99, arc: 99 },
+    onlyUsableByBuild: false,
+    listeners: new Set(),
 
-  // --- 5. STORAGE & STATE ---
-  const STORAGE_KEY = 'eldentrack_save_data_v1';
-  const StorageManager = {
-    load() {
+    init() {
       try {
-        const d = localStorage.getItem(STORAGE_KEY);
-        if (!d) return this.getDefault();
-        const p = JSON.parse(d);
-        return (p && p.characters && Array.isArray(p.characters)) ? p : this.getDefault();
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          this.saveData = JSON.parse(saved);
+          this.acquiredIds = this.saveData.characters?.[0]?.acquired || [];
+          this.wishlistIds = this.saveData.characters?.[0]?.wishlist || [];
+          this.soundEnabled = this.saveData.soundEnabled !== false;
+        } else {
+          this.saveData = { characters: [{ name: 'Maculado das Terras Intermédias', build: 'Equilibrado', acquired: [], wishlist: [] }], soundEnabled: true };
+        }
       } catch (e) {
-        return this.getDefault();
+        this.saveData = { characters: [{ name: 'Maculado', acquired: [], wishlist: [] }], soundEnabled: true };
       }
     },
-    save(data) {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); return true; } catch (e) { return false; }
+
+    save() {
+      try {
+        if (this.saveData && this.saveData.characters) {
+          this.saveData.characters[0].acquired = this.acquiredIds;
+          this.saveData.characters[0].wishlist = this.wishlistIds;
+          this.saveData.soundEnabled = this.soundEnabled;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(this.saveData));
+        }
+      } catch (e) {}
     },
-    getDefault() {
+
+    subscribe(fn) { this.listeners.add(fn); return () => this.listeners.delete(fn); },
+    notify(event, meta) { this.listeners.forEach(fn => fn(event, this.getState(), meta)); },
+
+    getState() {
+      const stats = getCounts(this.acquiredIds);
+      const items = filterItems(this);
+
+      const sections = CATEGORIES.filter(c => c.id !== 'all').map(cat => {
+        const catItems = items.filter(i => i.category === cat.id);
+        const catAcq = catItems.filter(i => this.acquiredIds.includes(i.id)).length;
+        return {
+          id: cat.id,
+          name: cat.name,
+          icon: cat.icon,
+          description: cat.description,
+          items: catItems,
+          total: catItems.length,
+          acquired: catAcq,
+          percentage: catItems.length > 0 ? Math.round((catAcq / catItems.length) * 100) : 0
+        };
+      }).filter(s => s.total > 0);
+
       return {
-        version: 1,
-        activeCharacterId: 'char_default',
-        characters: [{ id: 'char_default', name: 'Maculado das Terras Intermédias', build: 'Qualidade / Equilibrado', acquired: [], wishlist: [] }]
+        activeCategory: this.activeCategory,
+        activeRegion: this.activeRegion,
+        searchQuery: this.searchQuery,
+        statusFilter: this.statusFilter,
+        viewMode: this.viewMode,
+        acquiredIds: this.acquiredIds,
+        wishlistIds: this.wishlistIds,
+        items,
+        sections,
+        stats,
+        soundEnabled: this.soundEnabled,
+        activeBuildId: this.activeBuildId,
+        userStats: this.userStats,
+        onlyUsableByBuild: this.onlyUsableByBuild,
+        selectedItem: this.selectedItem,
+        statsModalOpen: this.statsModalOpen
       };
     },
-    exportSaveFile(data) {
-      const b = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const u = URL.createObjectURL(b);
-      const a = document.createElement('a');
-      a.href = u;
-      a.download = `eldentrack_save_${new Date().toISOString().slice(0, 10)}.json`;
-      a.click();
-      URL.revokeObjectURL(u);
+
+    toggleAcquired(id) {
+      const idx = this.acquiredIds.indexOf(id);
+      let isAcq = false;
+      if (idx >= 0) { this.acquiredIds.splice(idx, 1); isAcq = false; }
+      else { this.acquiredIds.push(id); isAcq = true; }
+      this.save();
+      this.notify('item_acquired_toggled', { id, isAcq });
+    },
+
+    toggleWishlist(id) {
+      const idx = this.wishlistIds.indexOf(id);
+      if (idx >= 0) this.wishlistIds.splice(idx, 1);
+      else this.wishlistIds.push(id);
+      this.save();
+      this.notify('item_wishlist_toggled', { id });
+    },
+
+    setSearchQuery(q) {
+      this.searchQuery = q;
+      this.notify('search_query_changed', { isSearch: true });
+    },
+
+    setCategory(cat) { this.activeCategory = cat; this.notify('category_changed'); },
+    setRegion(reg) { this.activeRegion = reg; this.notify('region_changed'); },
+    setStatusFilter(st) { this.statusFilter = st; this.notify('status_filter_changed'); },
+    setViewMode(mode) { this.viewMode = mode; this.notify('view_mode_changed'); },
+    setSelectedItem(item) { this.selectedItem = item; this.notify('selected_item_changed'); },
+    toggleStatsModal(open) { this.statsModalOpen = typeof open === 'boolean' ? open : !this.statsModalOpen; this.notify('stats_modal_toggled'); },
+    toggleSound() { this.soundEnabled = !this.soundEnabled; this.save(); this.notify('sound_toggled'); },
+
+    setBuildPreset(presetId) {
+      this.activeBuildId = presetId;
+      const preset = BUILD_PRESETS.find(p => p.id === presetId);
+      if (preset) this.userStats = { ...preset.stats };
+      this.notify('build_changed');
+    },
+
+    setStat(statKey, val) {
+      this.userStats[statKey] = parseInt(val, 10) || 0;
+      this.activeBuildId = 'custom';
+      this.notify('build_changed');
+    },
+
+    toggleOnlyUsable() {
+      this.onlyUsableByBuild = !this.onlyUsableByBuild;
+      this.notify('build_changed');
     }
   };
 
-  // --- 6. TOAST NOTIFICATIONS ---
-  const Toast = {
-    show({ title, message, icon = '✨', duration = 3000, playSound = false }) {
-      let container = document.getElementById('toast-container');
-      if (!container) {
-        container = document.createElement('div');
-        container.id = 'toast-container';
-        container.className = 'toast-container';
-        document.body.appendChild(container);
-      }
-      const t = document.createElement('div');
-      t.className = 'toast';
-      t.innerHTML = `
-        <div class="toast-icon">${icon}</div>
-        <div class="toast-content">
-          <div class="toast-title">${title}</div>
-          <div class="toast-desc">${message}</div>
-        </div>
-      `;
-      container.appendChild(t);
-      if (playSound) this.playGraceSound();
-      setTimeout(() => {
-        t.classList.add('toast-exit');
-        setTimeout(() => t.remove(), 300);
-      }, duration);
-    },
-    playGraceSound() {
+  // --- 8. AUDIO FEEDBACK ---
+  const AudioEngine = {
+    playChime() {
+      if (!Store.soundEnabled) return;
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         if (!AudioCtx) return;
@@ -717,157 +681,87 @@
         osc.type = 'sine';
         osc.frequency.setValueAtTime(587.33, ctx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(1174.66, ctx.currentTime + 0.35);
-        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.setValueAtTime(0.09, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start();
         osc.stop(ctx.currentTime + 0.8);
       } catch (e) {}
+    },
+    playClick() {
+      if (!Store.soundEnabled) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.04, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.06);
+      } catch (e) {}
     }
   };
 
-  // --- 7. BILINGUAL SEARCH & FILTERING ---
-  function filterItemsData({ category, region, query, status, acquiredIds, wishlistIds }) {
-    const cleanQuery = (query || '').trim().toLowerCase();
+  // --- 9. PARTICLES ENGINE (Grace Embers) ---
+  function initGraceParticles() {
+    let canvas = document.getElementById('grace-particles-canvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'grace-particles-canvas';
+      document.body.prepend(canvas);
+    }
+    const ctx = canvas.getContext('2d');
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
 
-    return ITEMS_DATA.filter(item => {
-      if (category !== 'all' && item.category !== category) return false;
-      if (region !== 'all_regions' && item.region !== region) return false;
-
-      const isAcquired = acquiredIds.includes(item.id);
-      const isWishlisted = wishlistIds.includes(item.id);
-
-      if (status === 'acquired' && !isAcquired) return false;
-      if (status === 'missing' && isAcquired) return false;
-      if (status === 'wishlist' && !isWishlisted) return false;
-
-      if (cleanQuery) {
-        const text = `${item.name} ${item.nameEn || ''} ${item.subtype || ''} ${item.location || ''} ${item.lore || ''} ${item.guide || ''}`.toLowerCase();
-        if (!text.includes(cleanQuery)) return false;
-      }
-      return true;
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
     });
-  }
 
-  // --- 8. STATE STORE ---
-  class StoreClass {
-    constructor() {
-      this.listeners = new Set();
-      this.saveData = StorageManager.load();
-      this.activeCharacterId = this.saveData.activeCharacterId || 'char_default';
-      const curChar = this.saveData.characters.find(c => c.id === this.activeCharacterId) || this.saveData.characters[0];
-      this.acquiredIds = curChar.acquired || [];
-      this.wishlistIds = curChar.wishlist || [];
+    const particles = Array.from({ length: 38 }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 2.2 + 0.8,
+      speedY: Math.random() * 0.45 + 0.15,
+      speedX: (Math.random() - 0.5) * 0.25,
+      opacity: Math.random() * 0.7 + 0.2,
+      pulse: Math.random() * Math.PI
+    }));
 
-      this.viewMode = 'grid';
-      this.activeCategory = 'all';
-      this.activeRegion = 'all_regions';
-      this.searchQuery = '';
-      this.statusFilter = 'all';
-      this.isLoading = false;
-      this.selectedItem = null;
-      this.statsModalOpen = false;
-    }
+    function loop() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => {
+        p.y -= p.speedY;
+        p.x += p.speedX;
+        p.pulse += 0.025;
+        const currentOpacity = Math.abs(Math.sin(p.pulse)) * p.opacity;
 
-    subscribe(fn) { this.listeners.add(fn); return () => this.listeners.delete(fn); }
-    notify(event) { this.listeners.forEach(fn => fn(event, this.getState())); }
+        if (p.y < -10) { p.y = height + 10; p.x = Math.random() * width; }
+        if (p.x < -10) p.x = width + 10;
+        if (p.x > width + 10) p.x = -10;
 
-    getState() {
-      const curChar = this.saveData.characters.find(c => c.id === this.activeCharacterId) || this.saveData.characters[0];
-      const stats = DataService.getCounts(this.acquiredIds);
-      const filtered = filterItemsData({
-        category: this.activeCategory,
-        region: this.activeRegion,
-        query: this.searchQuery,
-        status: this.statusFilter,
-        acquiredIds: this.acquiredIds,
-        wishlistIds: this.wishlistIds
+        ctx.fillStyle = `rgba(246, 226, 122, ${currentOpacity})`;
+        ctx.shadowColor = 'rgba(212, 175, 55, 0.8)';
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
       });
-
-      // Seções
-      const sections = CATEGORIES.filter(c => c.id !== 'all').map(cat => {
-        const catItems = filterItemsData({
-          category: cat.id,
-          region: this.activeRegion,
-          query: this.searchQuery,
-          status: this.statusFilter,
-          acquiredIds: this.acquiredIds,
-          wishlistIds: this.wishlistIds
-        });
-        const catAcquired = catItems.filter(i => this.acquiredIds.includes(i.id)).length;
-        return {
-          id: cat.id,
-          name: cat.name,
-          icon: cat.icon,
-          description: cat.description,
-          items: catItems,
-          total: catItems.length,
-          acquired: catAcquired,
-          percentage: catItems.length > 0 ? Math.round((catAcquired / catItems.length) * 100) : 0
-        };
-      }).filter(s => s.total > 0);
-
-      return {
-        viewMode: this.viewMode,
-        activeCategory: this.activeCategory,
-        activeRegion: this.activeRegion,
-        searchQuery: this.searchQuery,
-        statusFilter: this.statusFilter,
-        acquiredIds: this.acquiredIds,
-        wishlistIds: this.wishlistIds,
-        items: filtered,
-        sections,
-        stats,
-        activeCharacter: curChar,
-        isLoading: this.isLoading,
-        selectedItem: this.selectedItem,
-        statsModalOpen: this.statsModalOpen
-      };
+      requestAnimationFrame(loop);
     }
-
-    toggleAcquired(id) {
-      const idx = this.acquiredIds.indexOf(id);
-      let isAcq = false;
-      if (idx >= 0) { this.acquiredIds.splice(idx, 1); isAcq = false; }
-      else { this.acquiredIds.push(id); isAcq = true; }
-      this._sync();
-      this.notify('item_acquired_toggled');
-    }
-
-    toggleWishlist(id) {
-      const idx = this.wishlistIds.indexOf(id);
-      let isWish = false;
-      if (idx >= 0) { this.wishlistIds.splice(idx, 1); isWish = false; }
-      else { this.wishlistIds.push(id); isWish = true; }
-      this._sync();
-      this.notify('item_wishlist_toggled');
-    }
-
-    setViewMode(mode) { this.viewMode = mode; this._triggerLoading(); this.notify('view_mode_changed'); }
-    setCategory(cat) { this.activeCategory = cat; this._triggerLoading(); this.notify('category_changed'); }
-    setRegion(reg) { this.activeRegion = reg; this._triggerLoading(); this.notify('region_changed'); }
-    setSearchQuery(q) { this.searchQuery = q; this.notify('search_changed'); }
-    setStatusFilter(st) { this.statusFilter = st; this._triggerLoading(); this.notify('status_filter_changed'); }
-    setSelectedItem(item) { this.selectedItem = item; this.notify('selected_item_changed'); }
-    toggleStatsModal(open) { this.statsModalOpen = typeof open === 'boolean' ? open : !this.statsModalOpen; this.notify('stats_modal_toggled'); }
-
-    _sync() {
-      const curChar = this.saveData.characters.find(c => c.id === this.activeCharacterId);
-      if (curChar) { curChar.acquired = [...this.acquiredIds]; curChar.wishlist = [...this.wishlistIds]; }
-      StorageManager.save(this.saveData);
-    }
-
-    _triggerLoading() {
-      this.isLoading = true;
-      this.notify('loading_start');
-      setTimeout(() => { this.isLoading = false; this.notify('loading_end'); }, 180);
-    }
+    loop();
   }
 
-  const Store = new StoreClass();
-
-  // --- 9. UI RENDERERS ---
+  // --- 10. UI COMPONENTS RENDERER ---
   const UI = {
     renderHeader(state) {
       const s = state.stats;
@@ -895,20 +789,85 @@
           </div>
 
           <div class="header-actions">
+            <button class="sound-toggle-btn" id="sound-toggle-btn" title="Ativar/Desativar Efeitos Sonoros">
+              ${state.soundEnabled ? '🔔 Sons: ON' : '🔕 Sons: OFF'}
+            </button>
             <div class="header-progress-box" id="open-stats-btn" style="cursor: pointer;" title="Abrir Dashboard de Estatísticas">
               <div class="progress-circular-mini">
                 <svg viewBox="0 0 36 36" style="width: 100%; height: 100%;">
                   <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3.5" />
-                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--gold-primary)" stroke-width="3.5" stroke-dasharray="${s.percentage}, 100" stroke-linecap="round" />
+                  <path id="header-progress-svg-path" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--gold-primary)" stroke-width="3.5" stroke-dasharray="${s.percentage}, 100" stroke-linecap="round" />
                 </svg>
               </div>
-              <span class="progress-text-mini">${s.percentage}%</span>
+              <span class="progress-text-mini" id="header-progress-text">${s.percentage}%</span>
             </div>
-            <button class="btn btn-secondary" id="save-menu-btn" title="Backup e Save">
-              🛡️ ${state.activeCharacter?.name || 'Maculado'}
-            </button>
           </div>
         </header>
+      `;
+    },
+
+    renderRegionStrip(state) {
+      const cards = REGIONS.map(reg => {
+        const isActive = state.activeRegion === reg.id;
+        const regStat = state.stats.byRegion[reg.id] || { acquired: 0, total: 0, percentage: 0 };
+        return `
+          <div class="region-strip-card ${isActive ? 'active' : ''}" data-region-card-id="${reg.id}">
+            <div class="region-card-header">
+              <span class="region-card-icon">${reg.badge}</span>
+              <span class="region-card-name" title="${reg.name}">${reg.name}</span>
+            </div>
+            <div class="region-card-progress">
+              <span>${regStat.acquired}/${regStat.total}</span>
+              <span>${regStat.percentage}%</span>
+            </div>
+            <div class="progress-bar-bg" style="height: 4px;">
+              <div class="progress-bar-fill" style="width: ${regStat.percentage}%;"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div style="margin-bottom: 8px;">
+          <div style="font-family: var(--font-serif); font-size: 0.88rem; color: var(--gold-light); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <span>🗺️</span><span>Regiões das Terras Intermédias & Reino das Sombras</span>
+          </div>
+          <div class="region-strip-container">${cards}</div>
+        </div>
+      `;
+    },
+
+    renderBuildBar(state) {
+      const presets = BUILD_PRESETS.map(p => `
+        <button class="build-preset-btn ${state.activeBuildId === p.id ? 'active' : ''}" data-preset-id="${p.id}">
+          ${p.name}
+        </button>
+      `).join('');
+
+      const s = state.userStats;
+
+      return `
+        <div class="build-bar-wrapper">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="font-family: var(--font-serif); font-size: 0.85rem; color: var(--gold-bright);">⚔️ Requisitos da Sua Build:</span>
+            <div class="build-presets-group">${presets}</div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div class="stat-inputs-group">
+              <div class="stat-input-box"><span class="stat-input-label">FOR</span><input type="number" class="stat-input-val" data-stat="str" value="${s.str}" min="1" max="99" /></div>
+              <div class="stat-input-box"><span class="stat-input-label">DES</span><input type="number" class="stat-input-val" data-stat="dex" value="${s.dex}" min="1" max="99" /></div>
+              <div class="stat-input-box"><span class="stat-input-label">INT</span><input type="number" class="stat-input-val" data-stat="int" value="${s.int}" min="1" max="99" /></div>
+              <div class="stat-input-box"><span class="stat-input-label">FÉ</span><input type="number" class="stat-input-val" data-stat="fai" value="${s.fai}" min="1" max="99" /></div>
+              <div class="stat-input-box"><span class="stat-input-label">ARC</span><input type="number" class="stat-input-val" data-stat="arc" value="${s.arc}" min="1" max="99" /></div>
+            </div>
+
+            <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--text-secondary); cursor: pointer;">
+              <input type="checkbox" id="only-usable-checkbox" ${state.onlyUsableByBuild ? 'checked' : ''} />
+              <span>Apenas Compatíveis</span>
+            </label>
+          </div>
+        </div>
       `;
     },
 
@@ -921,13 +880,15 @@
         </button>
       `).join('');
 
-      const regs = REGIONS.map(r => `
-        <option value="${r.id}" ${state.activeRegion === r.id ? 'selected' : ''}>${r.badge || ''} ${r.name}</option>
-      `).join('');
-
       return `
         <div class="filter-container">
+          ${this.renderRegionStrip(state)}
+          ${this.renderBuildBar(state)}
+
+          <!-- Categories Chips -->
           <div class="categories-scroll">${cats}</div>
+
+          <!-- Sub Filters Row -->
           <div class="sub-filters-row">
             <div class="status-pills">
               <button class="status-pill ${state.statusFilter === 'all' ? 'active' : ''}" data-status="all">Todos (${state.stats.total})</button>
@@ -941,9 +902,8 @@
                 <button class="view-mode-btn ${state.viewMode === 'grid' ? 'active' : ''}" data-view-mode="grid">🔲 Grid</button>
                 <button class="view-mode-btn ${state.viewMode === 'sections' ? 'active' : ''}" data-view-mode="sections">📑 Seções</button>
               </div>
-              <select class="custom-select" id="region-select">${regs}</select>
-              ${(state.activeCategory !== 'all' || state.activeRegion !== 'all_regions' || state.statusFilter !== 'all' || state.searchQuery) ? `
-                <button class="btn btn-ghost" id="clear-filters-btn" style="padding: 6px 10px; font-size: 0.8rem;">✕ Limpar</button>
+              ${(state.activeCategory !== 'all' || state.activeRegion !== 'all_regions' || state.statusFilter !== 'all' || state.searchQuery || state.onlyUsableByBuild) ? `
+                <button class="btn btn-ghost" id="clear-filters-btn" style="padding: 6px 10px; font-size: 0.8rem;">✕ Limpar Filtros</button>
               ` : ''}
             </div>
           </div>
@@ -951,14 +911,32 @@
       `;
     },
 
-    renderItemCard(item, isAcquired, isWishlisted) {
+    renderItemCard(item, state) {
+      const isAcquired = state.acquiredIds.includes(item.id);
+      const isWishlisted = state.wishlistIds.includes(item.id);
+      const curStats = state.userStats;
       const reqs = item.requirements || {};
+
+      // Teste de usabilidade
+      let canWield = true;
+      let missingList = [];
+      if (reqs.str > curStats.str) { canWield = false; missingList.push(`FOR ${reqs.str}`); }
+      if (reqs.dex > curStats.dex) { canWield = false; missingList.push(`DES ${reqs.dex}`); }
+      if (reqs.int > curStats.int) { canWield = false; missingList.push(`INT ${reqs.int}`); }
+      if (reqs.fai > curStats.fai) { canWield = false; missingList.push(`FÉ ${reqs.fai}`); }
+      if (reqs.arc > curStats.arc) { canWield = false; missingList.push(`ARC ${reqs.arc}`); }
+
       const reqPills = [];
-      if (reqs.str > 0) reqPills.push(`<span class="req-pill active">FOR ${reqs.str}</span>`);
-      if (reqs.dex > 0) reqPills.push(`<span class="req-pill active">DES ${reqs.dex}</span>`);
-      if (reqs.int > 0) reqPills.push(`<span class="req-pill active">INT ${reqs.int}</span>`);
-      if (reqs.fai > 0) reqPills.push(`<span class="req-pill active">FÉ ${reqs.fai}</span>`);
-      if (reqs.arc > 0) reqPills.push(`<span class="req-pill active">ARC ${reqs.arc}</span>`);
+      if (reqs.str > 0) reqPills.push(`<span class="req-pill ${curStats.str >= reqs.str ? 'active' : ''}">FOR ${reqs.str}</span>`);
+      if (reqs.dex > 0) reqPills.push(`<span class="req-pill ${curStats.dex >= reqs.dex ? 'active' : ''}">DES ${reqs.dex}</span>`);
+      if (reqs.int > 0) reqPills.push(`<span class="req-pill ${curStats.int >= reqs.int ? 'active' : ''}">INT ${reqs.int}</span>`);
+      if (reqs.fai > 0) reqPills.push(`<span class="req-pill ${curStats.fai >= reqs.fai ? 'active' : ''}">FÉ ${reqs.fai}</span>`);
+      if (reqs.arc > 0) reqPills.push(`<span class="req-pill ${curStats.arc >= reqs.arc ? 'active' : ''}">ARC ${reqs.arc}</span>`);
+
+      const hasRequirements = Object.values(reqs).some(v => v > 0);
+      const wieldBadge = hasRequirements ? (
+        canWield ? `<span class="wieldable-badge can-wield">✓ Pronto para Uso</span>` : `<span class="wieldable-badge cannot-wield">⚠️ Requer ${missingList.join(', ')}</span>`
+      ) : '';
 
       return `
         <div class="item-card stagger-item rarity-${item.rarity || 'common'} ${isAcquired ? 'is-acquired' : ''}" data-item-id="${item.id}">
@@ -966,14 +944,24 @@
             <div class="item-icon-wrapper">${item.icon || '⚔️'}</div>
             <div class="card-info">
               <h3 class="item-title" title="${item.name}">${item.name}</h3>
-              <div class="item-meta"><span class="region-tag">${item.location}</span></div>
+              <div class="item-meta">
+                <span class="region-tag">${item.location}</span>
+              </div>
             </div>
             <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" data-action="wishlist" data-id="${item.id}">
               ${isWishlisted ? '★' : '☆'}
             </button>
           </div>
-          <div class="card-body"><p>${item.lore || item.guide}</p></div>
-          ${reqPills.length > 0 ? `<div class="req-pills">${reqPills.join('')}</div>` : ''}
+
+          <div class="card-body">
+            <p>${item.lore || item.guide}</p>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px; flex-wrap: wrap; gap: 4px;">
+            ${reqPills.length > 0 ? `<div class="req-pills">${reqPills.join('')}</div>` : '<div></div>'}
+            ${wieldBadge}
+          </div>
+
           <div class="card-footer">
             <button class="grace-check-btn ${isAcquired ? 'checked' : ''}" data-action="toggle-acquired" data-id="${item.id}">
               ${isAcquired ? '✓ Obtido' : '○ Obter Item'}
@@ -986,9 +974,9 @@
       `;
     },
 
-    renderSectionView(sections, acquiredIds, wishlistIds) {
+    renderSectionView(sections, state) {
       if (!sections || sections.length === 0) {
-        return `<div class="empty-state"><div class="empty-icon">🕯️</div><div class="empty-title">Nenhum Segredo Encontrado</div><p class="empty-desc">Nenhum item corresponde aos filtros.</p></div>`;
+        return `<div class="empty-state"><div class="empty-icon">🕯️</div><div class="empty-title">Nenhum Segredo Encontrado</div><p class="empty-desc">Nenhum item corresponde aos filtros e build atual.</p></div>`;
       }
 
       const nav = sections.map(s => `
@@ -1021,7 +1009,7 @@
           </div>
           <div class="section-content" id="sec-content-${s.id}">
             <div class="items-grid">
-              ${s.items.map(i => UI.renderItemCard(i, acquiredIds.includes(i.id), wishlistIds.includes(i.id))).join('')}
+              ${s.items.map(i => UI.renderItemCard(i, state)).join('')}
             </div>
           </div>
         </div>
@@ -1104,9 +1092,11 @@
     }
   };
 
-  // --- 10. APP INITIALIZER ---
+  // --- 11. BOOTSTRAP & DOM EVENT DELEGATION ---
   function initApp() {
-    console.log('[EldenTrack] Inicializando aplicativo...');
+    Store.init();
+    initGraceParticles();
+
     const headerRoot = document.getElementById('header-root');
     const bannerStatsRoot = document.getElementById('banner-stats-root');
     const filterBarRoot = document.getElementById('filter-bar-root');
@@ -1114,10 +1104,21 @@
     const modalRoot = document.getElementById('modal-root');
     const statsModalRoot = document.getElementById('stats-modal-root');
 
-    function renderApp() {
+    // 1. Renderiza o Header uma única vez para NUNCA perder o foco do input
+    if (headerRoot) {
+      headerRoot.innerHTML = UI.renderHeader(Store.getState());
+    }
+
+    function updateAppView(meta = {}) {
       const state = Store.getState();
 
-      if (headerRoot) headerRoot.innerHTML = UI.renderHeader(state);
+      // Atualiza stats do Header sem recriar o input
+      const pText = document.getElementById('header-progress-text');
+      if (pText) pText.textContent = `${state.stats.percentage}%`;
+      const pSvg = document.getElementById('header-progress-svg-path');
+      if (pSvg) pSvg.setAttribute('stroke-dasharray', `${state.stats.percentage}, 100`);
+
+      // Banner Stats
       if (bannerStatsRoot) {
         bannerStatsRoot.innerHTML = `
           <div class="stat-pill-box"><div class="stat-pill-val" style="color: var(--status-acquired);">${state.stats.acquired}</div><div class="stat-pill-lbl">Obtidos</div></div>
@@ -1125,54 +1126,82 @@
           <div class="stat-pill-box"><div class="stat-pill-val">${state.stats.percentage}%</div><div class="stat-pill-lbl">Progresso</div></div>
         `;
       }
-      if (filterBarRoot) filterBarRoot.innerHTML = UI.renderFilterBar(state);
 
+      // Se não for evento de digitação, atualiza a barra de filtros
+      if (!meta.isSearch && filterBarRoot) {
+        filterBarRoot.innerHTML = UI.renderFilterBar(state);
+      }
+
+      // Grid / Seções
       if (itemsGridView) {
         if (state.viewMode === 'sections') {
-          itemsGridView.innerHTML = UI.renderSectionView(state.sections, state.acquiredIds, state.wishlistIds);
+          itemsGridView.innerHTML = UI.renderSectionView(state.sections, state);
         } else {
           if (state.items.length === 0) {
-            itemsGridView.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><div class="empty-icon">🕯️</div><div class="empty-title">Nenhum Segredo Encontrado</div><p class="empty-desc">Nenhum item corresponde aos filtros selecionados ou à busca "${state.searchQuery}".</p></div>`;
+            itemsGridView.innerHTML = `
+              <div class="empty-state" style="grid-column: 1 / -1;">
+                <div class="empty-icon">🕯️</div>
+                <div class="empty-title">Nenhum Segredo Encontrado</div>
+                <p class="empty-desc">Nenhum item corresponde à busca "${state.searchQuery}" ou filtros selecionados.</p>
+              </div>
+            `;
           } else {
-            const cardsHtml = state.items.map(item => UI.renderItemCard(item, state.acquiredIds.includes(item.id), state.wishlistIds.includes(item.id))).join('');
+            const cardsHtml = state.items.map(item => UI.renderItemCard(item, state)).join('');
             itemsGridView.innerHTML = `<div id="items-grid" class="items-grid">${cardsHtml}</div>`;
           }
         }
       }
 
+      // Modais
       if (modalRoot) {
         modalRoot.innerHTML = state.selectedItem ? UI.renderModal(state.selectedItem, state.acquiredIds.includes(state.selectedItem.id), state.wishlistIds.includes(state.selectedItem.id)) : '';
       }
-
       if (statsModalRoot) {
         statsModalRoot.innerHTML = UI.renderStatsModal(state);
       }
     }
 
-    // Event Delegation
-    document.body.addEventListener('click', (e) => {
+    // Debounce no Search Input (sem recriar o input, sem perda de foco)
+    let searchTimer = null;
+    document.addEventListener('input', (e) => {
+      if (e.target.id === 'search-input') {
+        clearTimeout(searchTimer);
+        const query = e.target.value;
+        searchTimer = setTimeout(() => {
+          Store.setSearchQuery(query);
+        }, 50);
+      }
+
+      if (e.target.classList.contains('stat-input-val')) {
+        const stat = e.target.dataset.stat;
+        Store.setStat(stat, e.target.value);
+      }
+    });
+
+    document.addEventListener('change', (e) => {
+      if (e.target.id === 'only-usable-checkbox') {
+        AudioEngine.playClick();
+        Store.toggleOnlyUsable();
+      }
+    });
+
+    // Global Click Handler
+    document.addEventListener('click', (e) => {
       // Toggle Acquired
       const acqBtn = e.target.closest('[data-action="toggle-acquired"]');
       if (acqBtn) {
         e.stopPropagation();
-        const id = acqBtn.dataset.id;
-        const item = ITEMS_DATA.find(i => i.id === id);
-        Store.toggleAcquired(id);
-        const isAcq = Store.getState().acquiredIds.includes(id);
-        Toast.show({
-          title: isAcq ? '✨ Item Descoberto!' : 'Item Desmarcado',
-          message: `${item?.name || 'Item'} atualizado.`,
-          playSound: isAcq
-        });
+        AudioEngine.playChime();
+        Store.toggleAcquired(acqBtn.dataset.id);
         return;
       }
 
-      // Toggle Wishlist
+      // Wishlist
       const wishBtn = e.target.closest('[data-action="wishlist"]');
       if (wishBtn) {
         e.stopPropagation();
-        const id = wishBtn.dataset.id;
-        Store.toggleWishlist(id);
+        AudioEngine.playClick();
+        Store.toggleWishlist(wishBtn.dataset.id);
         return;
       }
 
@@ -1188,15 +1217,43 @@
 
       // Category Chip
       const chip = e.target.closest('[data-category-id]');
-      if (chip) { Store.setCategory(chip.dataset.categoryId); return; }
+      if (chip) {
+        AudioEngine.playClick();
+        Store.setCategory(chip.dataset.categoryId);
+        return;
+      }
+
+      // Region Strip Card
+      const regCard = e.target.closest('[data-region-card-id]');
+      if (regCard) {
+        AudioEngine.playClick();
+        Store.setRegion(regCard.dataset.regionCardId);
+        return;
+      }
 
       // Status Pill
       const statusPill = e.target.closest('[data-status]');
-      if (statusPill) { Store.setStatusFilter(statusPill.dataset.status); return; }
+      if (statusPill) {
+        AudioEngine.playClick();
+        Store.setStatusFilter(statusPill.dataset.status);
+        return;
+      }
 
       // View Mode Toggle
       const vmBtn = e.target.closest('[data-view-mode]');
-      if (vmBtn) { Store.setViewMode(vmBtn.dataset.viewMode); return; }
+      if (vmBtn) {
+        AudioEngine.playClick();
+        Store.setViewMode(vmBtn.dataset.viewMode);
+        return;
+      }
+
+      // Build Preset
+      const presetBtn = e.target.closest('[data-preset-id]');
+      if (presetBtn) {
+        AudioEngine.playClick();
+        Store.setBuildPreset(presetBtn.dataset.presetId);
+        return;
+      }
 
       // Section Toggle
       const secHeader = e.target.closest('[data-toggle-sec]');
@@ -1207,31 +1264,43 @@
         return;
       }
 
-      // Modals Close
-      if (e.target.id === 'modal-close-btn' || e.target.id === 'item-modal-overlay') { Store.setSelectedItem(null); return; }
-      if (e.target.id === 'stats-modal-close' || e.target.id === 'stats-dashboard-overlay') { Store.toggleStatsModal(false); return; }
-
-      // Open Stats
-      if (e.target.closest('#open-stats-btn')) { Store.toggleStatsModal(true); return; }
-
-      // Clear Filters
-      if (e.target.id === 'clear-filters-btn' || e.target.closest('#brand-home-btn')) {
-        Store.setCategory('all');
-        Store.setRegion('all_regions');
-        Store.setStatusFilter('all');
-        Store.setSearchQuery('');
-        const s = document.getElementById('search-input');
-        if (s) s.value = '';
+      // Sound Toggle
+      if (e.target.closest('#sound-toggle-btn')) {
+        Store.toggleSound();
+        const sBtn = document.getElementById('sound-toggle-btn');
+        if (sBtn) sBtn.textContent = Store.soundEnabled ? '🔔 Sons: ON' : '🔕 Sons: OFF';
         return;
       }
 
-      // Modal inner buttons
+      // Stats Modal
+      if (e.target.closest('#open-stats-btn')) { Store.toggleStatsModal(true); return; }
+      if (e.target.id === 'stats-modal-close' || e.target.id === 'stats-dashboard-overlay') { Store.toggleStatsModal(false); return; }
+
+      // Modal Close
+      if (e.target.id === 'modal-close-btn' || e.target.id === 'item-modal-overlay') { Store.setSelectedItem(null); return; }
+
+      // Clear Filters
+      if (e.target.id === 'clear-filters-btn' || e.target.closest('#brand-home-btn')) {
+        AudioEngine.playClick();
+        Store.activeCategory = 'all';
+        Store.activeRegion = 'all_regions';
+        Store.statusFilter = 'all';
+        Store.searchQuery = '';
+        Store.onlyUsableByBuild = false;
+        Store.activeBuildId = 'all_build';
+        Store.userStats = { str: 99, dex: 99, int: 99, fai: 99, arc: 99 };
+        const sInput = document.getElementById('search-input');
+        if (sInput) sInput.value = '';
+        Store.notify('filters_cleared');
+        return;
+      }
+
+      // Modal inner toggle
       if (e.target.id === 'modal-acquired-toggle') {
         const item = Store.getState().selectedItem;
         if (item) {
+          AudioEngine.playChime();
           Store.toggleAcquired(item.id);
-          const isAcq = Store.getState().acquiredIds.includes(item.id);
-          Toast.show({ title: isAcq ? '✨ Item Descoberto!' : 'Item Desmarcado', message: `${item.name} atualizado.`, playSound: isAcq });
         }
         return;
       }
@@ -1242,20 +1311,7 @@
       }
     });
 
-    // Inputs & Selects
-    document.body.addEventListener('input', (e) => {
-      if (e.target.id === 'search-input') {
-        Store.setSearchQuery(e.target.value);
-      }
-    });
-
-    document.body.addEventListener('change', (e) => {
-      if (e.target.id === 'region-select') {
-        Store.setRegion(e.target.value);
-      }
-    });
-
-    // Keyboard shortcut Ctrl+K
+    // Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
@@ -1268,12 +1324,10 @@
       }
     });
 
-    Store.subscribe(() => renderApp());
-    renderApp();
-    console.log('[EldenTrack] Renderização concluída com sucesso!');
+    Store.subscribe((event, state, meta) => updateAppView(meta));
+    updateAppView();
   }
 
-  // Auto-inicializar
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
   } else {
