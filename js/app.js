@@ -1,12 +1,12 @@
 /* ==========================================================================
-   ELDENTRACK - MAIN APPLICATION BOOTSTRAP
-   Orchestration, State Subscribers and Lazy Loading Flow
+   ELDENTRACK - MAIN APPLICATION BOOTSTRAP (Phase 2 with SectionView)
    ========================================================================== */
 
 import { Store } from './store/state.js';
 import { Header } from './components/header.js';
 import { FilterBar } from './components/filter-bar.js';
 import { ItemCard } from './components/item-card.js';
+import { SectionView } from './components/section-view.js';
 import { ItemModal } from './components/item-modal.js';
 import { StatsDashboard } from './components/stats-dashboard.js';
 import { SkeletonLoader } from './components/skeleton-loader.js';
@@ -30,7 +30,8 @@ class Application {
     this.skeletonGridView.innerHTML = SkeletonLoader.renderCardSkeletons(8);
     
     // 2. Anexar Eventos globais de componentes
-    ItemCard.attachEvents(this.itemsGrid);
+    ItemCard.attachEvents(this.itemsGridView);
+    SectionView.attachEvents(this.itemsGridView);
     FilterBar.attachEvents(this.filterBarRoot);
     ItemModal.attachEvents(this.modalRoot);
     StatsDashboard.attachEvents(this.statsModalRoot);
@@ -40,12 +41,12 @@ class Application {
       this.render(state, eventName);
     });
 
-    // 4. Renderização inicial com leve delay para demonstrar a animação de entrada
+    // 4. Renderização inicial com leve delay para demonstrar o skeleton loading
     this.showSkeletons(true);
     setTimeout(() => {
       this.render(Store.getState(), 'initial_mount');
       this.showSkeletons(false);
-    }, 350);
+    }, 300);
   }
 
   showSkeletons(show) {
@@ -90,21 +91,28 @@ class Application {
 
     this.showSkeletons(false);
 
-    // Items Grid
-    if (state.items.length === 0) {
-      this.itemsGrid.innerHTML = `
-        <div class="empty-state" style="grid-column: 1 / -1;">
-          <div class="empty-icon">🕯️</div>
-          <div class="empty-title">Nenhum Segredo Encontrado</div>
-          <p class="empty-desc">Nenhum item corresponde aos filtros selecionados ou à busca "${state.searchQuery}".</p>
-        </div>
-      `;
+    // Render de Conteúdo de acordo com viewMode
+    if (state.viewMode === 'sections') {
+      this.itemsGridView.innerHTML = SectionView.render(state.sections, state.acquiredIds, state.wishlistIds);
     } else {
-      this.itemsGrid.innerHTML = state.items.map(item => {
-        const isAcquired = state.acquiredIds.includes(item.id);
-        const isWishlisted = state.wishlistIds.includes(item.id);
-        return ItemCard.render(item, isAcquired, isWishlisted);
-      }).join('');
+      // Modo Grid Unificado
+      if (state.items.length === 0) {
+        this.itemsGridView.innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <div class="empty-icon">🕯️</div>
+            <div class="empty-title">Nenhum Segredo Encontrado</div>
+            <p class="empty-desc">Nenhum item corresponde aos filtros selecionados ou à busca "${state.searchQuery}".</p>
+          </div>
+        `;
+      } else {
+        const cardsHtml = state.items.map(item => {
+          const isAcquired = state.acquiredIds.includes(item.id);
+          const isWishlisted = state.wishlistIds.includes(item.id);
+          return ItemCard.render(item, isAcquired, isWishlisted);
+        }).join('');
+
+        this.itemsGridView.innerHTML = `<div id="items-grid" class="items-grid">${cardsHtml}</div>`;
+      }
     }
 
     // Modal de Detalhes

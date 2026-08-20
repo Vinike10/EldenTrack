@@ -82,3 +82,36 @@ Este documento cataloga todas as Issues e entregas do projeto **EldenTrack**, es
   - [x] Carregamento inicial ultra-rápido com zero erros no console.
   - [x] Responsividade em desktop, tablet e mobile.
   - [x] Gravação de demonstração no navegador.
+
+---
+
+### [Issue #08] - Camada de API Fextralife & População de Dados PT-BR
+- **Status**: 🟢 Completed
+- **Branch/PR**: `pr-08-fextralife-api-layer`
+- **Descrição**: Desenvolver o serviço assíncrono `EldenAPI` com endpoints de busca, filtros, caching local, sincronização da Wiki Fextralife e expansão massiva da base de itens em Português do Brasil com aliases em inglês.
+- **Critérios de Aceitação**:
+  - [x] Módulo `js/api/elden-api.js` com suporte a `fetchItems`, `fetchSections`, `search` e cache.
+  - [x] Mapeamento e tradução completa dos itens de Elden Ring e DLC para o público brasileiro.
+  - [x] Dicionário bilíngue para busca inteligente.
+
+---
+
+### [Issue #09] - Modo de Seções Dedicadas por Categoria & Navegação
+- **Status**: 🟢 Completed
+- **Branch/PR**: `pr-09-dedicated-sections-view`
+- **Descrição**: Implementar o modo de exibição por seções separadas de cada categoria, com âncoras rápidas, cabeçalhos estilizados, barra de progresso individual e recolhimento (accordion).
+- **Critérios de Aceitação**:
+  - [x] Componente `js/components/section-view.js` com seções separadas por categoria.
+  - [x] Barra de navegação por âncoras (`#section-weapons`, `#section-talismans`, etc.).
+  - [x] Contadores e porcentagens específicas de cada categoria.
+
+---
+
+### [Issue #10] - Busca Avançada Bilíngue & Filtro por Atributos
+- **Status**: 🟢 Completed
+- **Branch/PR**: `pr-10-advanced-bilingual-search`
+- **Descrição**: Atualizar a barra de filtros com suporte a busca bilíngue, filtros por requisitos de atributos (FOR, DES, INT, FÉ, ARC) e alternador de modo de exibição (Grid Unificado vs Seções).
+- **Critérios de Aceitação**:
+  - [x] Alternador de visualização Grid vs Seções na barra de ferramentas.
+  - [x] Filtro deslizante ou seletor de atributos mínimos.
+  - [x] Integração fluida com o ciclo de skeleton lazy loading.

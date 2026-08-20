@@ -1,9 +1,10 @@
 /* ==========================================================================
-   ELDENTRACK - REACTIVE STATE STORE (Pub/Sub)
+   ELDENTRACK - REACTIVE STATE STORE (Pub/Sub with EldenAPI Integration)
    ========================================================================== */
 
 import { StorageManager } from './storage.js';
 import { DataService } from '../data/items-index.js';
+import { EldenAPI } from '../api/elden-api.js';
 
 class StateStore {
   constructor() {
@@ -18,15 +19,28 @@ class StateStore {
     this.wishlistIds = curChar.wishlist || [];
 
     // Filtros e UI
+    this.viewMode = 'grid'; // 'grid' ou 'sections'
     this.activeCategory = 'all';
     this.activeRegion = 'all_regions';
     this.searchQuery = '';
     this.statusFilter = 'all'; // 'all', 'acquired', 'missing', 'wishlist'
+    this.requirements = {
+      maxStr: null,
+      maxDex: null,
+      maxInt: null,
+      maxFai: null,
+      maxArc: null
+    };
     this.sortBy = 'default';
     this.isLoading = false;
     this.selectedItem = null;
     this.statsModalOpen = false;
     this.helpModalOpen = false;
+
+    // Cache interno de itens filtrados e seções
+    this.currentItems = [];
+    this.currentSections = [];
+    this._refreshData();
   }
 
   subscribe(listener) {
@@ -46,27 +60,20 @@ class StateStore {
 
   getState() {
     const curChar = this.saveData.characters.find(c => c.id === this.activeCharacterId) || this.saveData.characters[0];
-
-    const filteredItems = DataService.filterItems({
-      category: this.activeCategory,
-      region: this.activeRegion,
-      search: this.searchQuery,
-      status: this.statusFilter,
-      acquiredIds: this.acquiredIds,
-      wishlistIds: this.wishlistIds
-    });
-
     const stats = DataService.getCounts(this.acquiredIds);
 
     return {
+      viewMode: this.viewMode,
       activeCategory: this.activeCategory,
       activeRegion: this.activeRegion,
       searchQuery: this.searchQuery,
       statusFilter: this.statusFilter,
+      requirements: this.requirements,
       sortBy: this.sortBy,
       acquiredIds: this.acquiredIds,
       wishlistIds: this.wishlistIds,
-      items: filteredItems,
+      items: this.currentItems,
+      sections: this.currentSections,
       totalItemCount: DataService.getAllItems().length,
       stats,
       activeCharacter: curChar,
@@ -78,9 +85,34 @@ class StateStore {
     };
   }
 
+  async _refreshData() {
+    const { items } = await EldenAPI.fetchItems({
+      category: this.activeCategory,
+      region: this.activeRegion,
+      query: this.searchQuery,
+      status: this.statusFilter,
+      acquiredIds: this.acquiredIds,
+      wishlistIds: this.wishlistIds,
+      requirements: this.requirements,
+      simulatedLatency: 0
+    });
+
+    const sections = await EldenAPI.fetchSections({
+      region: this.activeRegion,
+      query: this.searchQuery,
+      status: this.statusFilter,
+      acquiredIds: this.acquiredIds,
+      wishlistIds: this.wishlistIds,
+      requirements: this.requirements
+    });
+
+    this.currentItems = items;
+    this.currentSections = sections;
+  }
+
   // --- Actions ---
 
-  toggleAcquired(itemId) {
+  async toggleAcquired(itemId) {
     const idx = this.acquiredIds.indexOf(itemId);
     let isNowAcquired = false;
 
@@ -93,10 +125,11 @@ class StateStore {
     }
 
     this._syncSaveData();
+    await this._refreshData();
     this.notify('item_acquired_toggled', { itemId, isNowAcquired });
   }
 
-  toggleWishlist(itemId) {
+  async toggleWishlist(itemId) {
     const idx = this.wishlistIds.indexOf(itemId);
     let isWishlisted = false;
 
@@ -109,32 +142,44 @@ class StateStore {
     }
 
     this._syncSaveData();
+    await this._refreshData();
     this.notify('item_wishlist_toggled', { itemId, isWishlisted });
   }
 
-  setCategory(categoryId) {
+  setViewMode(mode) {
+    if (this.viewMode === mode) return;
+    this.viewMode = mode;
+    this._triggerLoading();
+    this.notify('view_mode_changed', { mode });
+  }
+
+  async setCategory(categoryId) {
     if (this.activeCategory === categoryId) return;
     this.activeCategory = categoryId;
     this._triggerLoading();
+    await this._refreshData();
     this.notify('category_changed', { categoryId });
   }
 
-  setRegion(regionId) {
+  async setRegion(regionId) {
     if (this.activeRegion === regionId) return;
     this.activeRegion = regionId;
     this._triggerLoading();
+    await this._refreshData();
     this.notify('region_changed', { regionId });
   }
 
-  setSearchQuery(query) {
+  async setSearchQuery(query) {
     this.searchQuery = query;
+    await this._refreshData();
     this.notify('search_changed', { query });
   }
 
-  setStatusFilter(status) {
+  async setStatusFilter(status) {
     if (this.statusFilter === status) return;
     this.statusFilter = status;
     this._triggerLoading();
+    await this._refreshData();
     this.notify('status_filter_changed', { status });
   }
 
@@ -153,24 +198,7 @@ class StateStore {
     this.notify('help_modal_toggled', { open: this.helpModalOpen });
   }
 
-  createCharacter(name, build) {
-    const newChar = {
-      id: 'char_' + Date.now(),
-      name: name || 'Novo Maculado',
-      build: build || 'Híbrido',
-      acquired: [],
-      wishlist: [],
-      createdAt: new Date().toISOString()
-    };
-    this.saveData.characters.push(newChar);
-    this.activeCharacterId = newChar.id;
-    this.acquiredIds = [];
-    this.wishlistIds = [];
-    this._syncSaveData();
-    this.notify('character_created', { character: newChar });
-  }
-
-  switchCharacter(charId) {
+  async switchCharacter(charId) {
     const char = this.saveData.characters.find(c => c.id === charId);
     if (!char) return;
     this.activeCharacterId = charId;
@@ -179,6 +207,7 @@ class StateStore {
     this.saveData.activeCharacterId = charId;
     StorageManager.save(this.saveData);
     this._triggerLoading();
+    await this._refreshData();
     this.notify('character_switched', { character: char });
   }
 
@@ -195,6 +224,7 @@ class StateStore {
       this.acquiredIds = curChar.acquired || [];
       this.wishlistIds = curChar.wishlist || [];
       this._triggerLoading();
+      await this._refreshData();
       this.notify('save_imported', { character: curChar });
       return true;
     } catch (err) {
@@ -203,13 +233,13 @@ class StateStore {
     }
   }
 
-  resetAllProgress() {
+  async resetAllProgress() {
     this.saveData = StorageManager.resetProgress();
     this.activeCharacterId = this.saveData.activeCharacterId;
-    const curChar = this.saveData.characters[0];
     this.acquiredIds = [];
     this.wishlistIds = [];
     this._triggerLoading();
+    await this._refreshData();
     this.notify('progress_reset', {});
   }
 

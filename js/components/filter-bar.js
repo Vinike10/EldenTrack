@@ -1,6 +1,5 @@
 /* ==========================================================================
-   ELDENTRACK - FILTER BAR COMPONENT
-   Search, Category Scroll, Region Selector & Status Pills
+   ELDENTRACK - FILTER BAR COMPONENT (with View Mode Toggle & Clear)
    ========================================================================== */
 
 import { Store } from '../store/state.js';
@@ -12,7 +11,7 @@ export const FilterBar = {
     const regions = DataService.getRegions();
     const stats = state.stats;
 
-    // Categorias
+    // Categorias Scroll
     const categoryChips = categories.map(cat => {
       const isActive = state.activeCategory === cat.id;
       const count = stats.byCategory[cat.id]?.total || 0;
@@ -27,7 +26,7 @@ export const FilterBar = {
       `;
     }).join('');
 
-    // Regiões (Opções do Select)
+    // Regiões Select
     const regionOptions = regions.map(reg => {
       const isSelected = state.activeRegion === reg.id ? 'selected' : '';
       const regStat = stats.byRegion[reg.id];
@@ -37,7 +36,7 @@ export const FilterBar = {
 
     return `
       <div class="filter-container">
-        <!-- Categories Scroll -->
+        <!-- Categories Scroll (visível apenas em Grid ou como atalho) -->
         <div class="categories-scroll" id="categories-scroll-container">
           ${categoryChips}
         </div>
@@ -60,8 +59,19 @@ export const FilterBar = {
             </button>
           </div>
 
-          <!-- Region Dropdown -->
-          <div style="display: flex; align-items: center; gap: 10px;">
+          <!-- Region Dropdown & View Mode Switcher -->
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <!-- View Mode Switcher -->
+            <div class="view-mode-toggle">
+              <button class="view-mode-btn ${state.viewMode === 'grid' ? 'active' : ''}" data-view-mode="grid" title="Visualização em Grid Único">
+                🔲 Grid
+              </button>
+              <button class="view-mode-btn ${state.viewMode === 'sections' ? 'active' : ''}" data-view-mode="sections" title="Visualização por Seções Separadas de Categorias">
+                📑 Seções
+              </button>
+            </div>
+
+            <!-- Region Select -->
             <select class="custom-select" id="region-select">
               ${regionOptions}
             </select>
@@ -78,7 +88,7 @@ export const FilterBar = {
   },
 
   attachEvents(container) {
-    // Categorias
+    // Categorias e Status
     container.addEventListener('click', (e) => {
       const chip = e.target.closest('[data-category-id]');
       if (chip) {
@@ -90,6 +100,12 @@ export const FilterBar = {
       if (statusPill) {
         const status = statusPill.dataset.status;
         Store.setStatusFilter(status);
+      }
+
+      const viewModeBtn = e.target.closest('[data-view-mode]');
+      if (viewModeBtn) {
+        const mode = viewModeBtn.dataset.viewMode;
+        Store.setViewMode(mode);
       }
 
       if (e.target.id === 'clear-filters-btn') {
