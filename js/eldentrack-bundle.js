@@ -46,23 +46,25 @@
     return matrix[b.length][a.length];
   }
 
+  // Verifica se a palavra buscada corresponde a algum token do item.
+  // REGRA PRINCIPAL: token do item deve CONTER a query (não o contrário, para evitar false positives).
+  // Levenshtein só é usado quando os tamanhos são próximos (evita matching de palavras muito diferentes).
   function isFuzzyTokenMatch(queryWord, targetWords) {
-    if (!queryWord) return true;
+    if (!queryWord || queryWord.length < 2) return false;
     const qLen = queryWord.length;
 
     for (const t of targetWords) {
-      if (!t) continue;
-      // 1. O token do item t contém o termo buscado (ex: "rapieira" contém "rapier")
+      if (!t || t.length < 2) continue;
+
+      // 1. O token do item contém a query (ex: "rapieira" contém "rapier" ou "rapieira")
       if (t.includes(queryWord)) return true;
 
-      // 2. Se ambos os termos tiverem tamanho relevante (>= 4), aceita se queryWord contém t
-      if (qLen >= 4 && t.length >= 4 && queryWord.includes(t)) return true;
-
-      // 3. Tolerância Levenshtein para erros de digitação (ex: "rapiera" vs "rapieira", dist = 1)
-      if (qLen >= 4 && t.length >= 4) {
-        const maxAllowedDist = qLen >= 7 ? 2 : 1;
-        const dist = levenshteinDistance(queryWord, t);
-        if (dist <= maxAllowedDist) return true;
+      // 2. Tolerância Levenshtein: só quando os tamanhos são próximos (diferença <= 2)
+      //    Isso evita que "rapiera" (7) case com "espada" (6) que tem chars completamente diferentes.
+      const lenDiff = Math.abs(qLen - t.length);
+      if (qLen >= 5 && t.length >= 5 && lenDiff <= 2) {
+        const maxDist = lenDiff <= 1 ? 1 : 2;
+        if (levenshteinDistance(queryWord, t) <= maxDist) return true;
       }
     }
     return false;
@@ -2114,48 +2116,50 @@
       }
 
       return ITEMS_DATA.filter(item => {
+        // --- Filtros de categoria, região e status (não dependem da busca) ---
         if (category !== 'all' && item.category !== category) return false;
         if (region !== 'all_regions' && item.region !== region) return false;
 
         const isAcquired = acquiredIds.includes(item.id);
         const isWishlisted = wishlistIds.includes(item.id);
-
         if (status === 'acquired' && !isAcquired) return false;
         if (status === 'missing' && isAcquired) return false;
         if (status === 'wishlist' && !isWishlisted) return false;
 
-        if (clean && queryWords.length > 0) {
-          // Texto do item normalizado
-          const rawItemText = [
-            item.name, item.nameEn || '', item.subtype || '', item.location || '',
-            item.nearestGrace || '', item.lore || '', item.guide || '', item.region || '',
-            item.secretType || '', item.combatStats?.skill || '',
-            item.combatStats?.damageType || '', item.combatStats?.passive || ''
-          ].join(' ');
-          const itemText = normalizeText(rawItemText);
-          const itemTokens = itemText.split(/\s+/).filter(w => w.length >= 2);
+        // --- Se não há busca ativa, exibir o item ---
+        if (!clean || clean.length < 2) return true;
 
-          // 1. Todas as palavras da busca devem aparecer no item (match direto)
-          const directMatch = queryWords.every(word => isFuzzyTokenMatch(word, itemTokens));
-          if (directMatch) return true;
+        // --- Texto do item normalizado (corpus completo) ---
+        const itemText = normalizeText([
+          item.name, item.nameEn || '', item.subtype || '',
+          item.location || '', item.nearestGrace || '',
+          item.lore || '', item.guide || '',
+          item.secretType || '',
+          item.combatStats?.skill || '',
+          item.combatStats?.damageType || '',
+          item.combatStats?.passive || ''
+        ].join(' '));
 
-          // 2. Algum alias do grupo correspondente à busca aparece como frase no texto do item
-          if (matchingAliasGroups.length > 0) {
-            const aliasMatch = matchingAliasGroups.some(alias => {
-              if (!alias || alias.length < 3) return false;
-              // A frase do alias deve aparecer como substring no itemText (não apenas token solto)
-              if (itemText.includes(alias)) return true;
-              // Para aliases de 1 palavra com >= 5 letras, aceita match fuzzy no texto completo
-              const aliasWords = alias.split(/\s+/).filter(w => w.length >= 5);
-              return aliasWords.length > 0 && aliasWords.every(aw => isFuzzyTokenMatch(aw, itemTokens));
-            });
-            if (aliasMatch) return true;
+        // --- 1. A QUERY INTEIRA aparece como substring do texto do item (método mais confiável) ---
+        if (itemText.includes(clean)) return true;
+
+        // --- 2. Verificar aliases: se a frase do alias aparecer no texto do item ---
+        if (matchingAliasGroups.length > 0) {
+          for (const alias of matchingAliasGroups) {
+            if (!alias || alias.length < 3) continue;
+            if (itemText.includes(alias)) return true;
           }
-
-          return false;
         }
 
-        return true;
+        // --- 3. Fuzzy word-by-word: cada palavra da query bate com algum token do item ---
+        //    (só para corrigir erros de digitação, ex: "rapieira" vs "rapiira")
+        if (queryWords.length > 0) {
+          const itemTokens = itemText.split(/\s+/).filter(w => w.length >= 3);
+          const fuzzyMatch = queryWords.every(word => isFuzzyTokenMatch(word, itemTokens));
+          if (fuzzyMatch) return true;
+        }
+
+        return false;
       });
     },
 
