@@ -1,87 +1,200 @@
 /* ==========================================================================
-   ELDENTRACK - ADVANCED STANDALONE ENGINE (v2.5)
-   Zero-lag Debounced Search, Grace Particles, Build Calculator & Region Strip
+   ELDENTRACK - ADVANCED COMPREHENSIVE ENGINE (v3.0)
+   Full Accent-Insensitive Fuzzy Search, 100+ Items (Rapiers, Katanas, Spells...)
+   Search Suggestions, Build Matcher & Ambient Grace System
    ========================================================================== */
 
 (function () {
   'use strict';
 
-  // --- 1. CATEGORIES DATA ---
+  // Helper de Normalização de Texto (Remove Acentos e Caracteres Especiais)
+  function normalizeText(str) {
+    if (!str) return '';
+    return str
+      .toString()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // remove acentos (é -> e, á -> a, ã -> a, etc.)
+      .replace(/[^a-z0-9\s]/g, ' ')   // substitui pontuação por espaço
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  // --- 1. CATEGORIAS DE ELDEN RING ---
   const CATEGORIES = [
-    { id: 'all', name: 'Todos os Segredos', icon: '✨', description: 'Catálogo unificado de todos os itens, magias e segredos.', color: '#d4af37' },
-    { id: 'weapons', name: 'Armas & Selos', icon: '⚔️', description: 'Espadas colossais, katanas, cajados brilhantes e selos sagrados.', color: '#e63946' },
-    { id: 'talismans', name: 'Talismãs Lendários', icon: '💍', description: 'Acessórios lendários que alteram atributos e concedem poderes únicos.', color: '#ff9d00' },
-    { id: 'spells', name: 'Magias & Encantamentos', icon: '🔮', description: 'Feitiçarias primordiais de Raya Lucaria e incantações divinas.', color: '#38bdf8' },
-    { id: 'ashes', name: 'Cinzas da Guerra', icon: '🗡️', description: 'Habilidades lendárias e afinidades de combate para armas.', color: '#bd6eff' },
-    { id: 'key_items', name: 'Itens Chave & Lágrimas', icon: '🗝️', description: 'Lágrimas larvais para renascimento, pedras de memória e chaves de pedra.', color: '#48a9fe' },
-    { id: 'armor', name: 'Armaduras & Elmos', icon: '🛡️', description: 'Conjuntos de campeões, armaduras lendárias e elmos especiais.', color: '#a2adb9' },
-    { id: 'cookbooks', name: 'Livros & Pedras Draconianas', icon: '📜', description: 'Manuais de artesanato e pedras de forja máxima (+25 / +10).', color: '#10b981' },
+    { id: 'all', name: 'Todos os Segredos', icon: '✨', description: 'Catálogo completo de todos os itens, magias e segredos.', color: '#d4af37' },
+    { id: 'weapons', name: 'Armas & Escudos', icon: '⚔️', description: 'Espadas, rapieiras, katanas, machados, cajados e escudos.', color: '#e63946' },
+    { id: 'talismans', name: 'Talismãs Lendários', icon: '💍', description: 'Acessórios que amplificam atributos e concedem poderes únicos.', color: '#ff9d00' },
+    { id: 'spells', name: 'Magias & Encantamentos', icon: '🔮', description: 'Feitiçarias de Raya Lucaria e encantos divinos das Terras Intermédias.', color: '#38bdf8' },
+    { id: 'ashes', name: 'Cinzas da Guerra', icon: '🗡️', description: 'Habilidades de combate lendárias e afinidades de armas.', color: '#bd6eff' },
+    { id: 'key_items', name: 'Itens Chave & Lágrimas', icon: '🗝️', description: 'Lágrimas larvais, fragmentos de Scadutree, sementes e chaves.', color: '#48a9fe' },
+    { id: 'armor', name: 'Armaduras & Elmos', icon: '🛡️', description: 'Conjuntos de campeões, armaduras pesadas e elmos com bônus.', color: '#a2adb9' },
+    { id: 'cookbooks', name: 'Livros & Pedras de Forja', icon: '📜', description: 'Manuais de artesanato e pedras de forja máxima (+25 / +10).', color: '#10b981' },
     { id: 'bosses', name: 'Chefes & Lembranças', icon: '👑', description: 'Semideuses, portadores de Grandes Runas e ameaças lendárias.', color: '#f59e0b' }
   ];
 
-  // --- 2. REGIONS DATA ---
+  // --- 2. REGIÕES ---
   const REGIONS = [
-    { id: 'all_regions', name: 'Todas as Regiões', badge: '🌍', icon: '✨', description: 'Todas as regiões das Terras Intermédias e Reino das Sombras.' },
-    { id: 'limgrave', name: 'Limgrave & Península', badge: '🌲', icon: '🏰', description: 'Castelo Tempesvéu, Primeira Graça e Castelo Morne.', accentColor: '#4ade80' },
-    { id: 'liurnia', name: 'Liurnia dos Lagos', badge: '💧', icon: '🌙', description: 'Academia de Feitiçaria de Raya Lucaria e Platô Lunar.', accentColor: '#38bdf8' },
-    { id: 'caelid', name: 'Caelid & Greyoll', badge: '🩸', icon: '☣️', description: 'Terras corrompidas pela Podridão e arena de Radahn.', accentColor: '#ef4444' },
-    { id: 'altus', name: 'Platô Altus & Gelmir', badge: '🍁', icon: '🌋', description: 'Planaltos dourados e o covil da Mansão Vulcânica.', accentColor: '#f59e0b' },
-    { id: 'leyndell', name: 'Leyndell Real', badge: '👑', icon: '🏛️', description: 'A gloriosa metrópole do trono de Marika.', accentColor: '#d4af37' },
-    { id: 'mountaintops', name: 'Montanhas & Neve', badge: '❄️', icon: '🏔️', description: 'Picos gélidos, Forja dos Gigantes e Neve Consagrada.', accentColor: '#93c5fd' },
-    { id: 'underground', name: 'Subterrâneo (Siofra/Nokron)', badge: '🌌', icon: '⭐', description: 'Cidades Eternas sob o firmamento estelar subterrâneo.', accentColor: '#a78bfa' },
-    { id: 'farum_azula', name: 'Farum Azula', badge: '🌪️', icon: '⚡', description: 'Templo flutuante ancestral dos Dragões Antigos.', accentColor: '#c084fc' },
-    { id: 'haligtree', name: 'Árvore Sacra', badge: '🌸', icon: '🗡️', description: 'O refúgio de Miquella e morada de Malenia.', accentColor: '#f472b6' },
-    { id: 'shadow_realm', name: 'Reino das Sombras (DLC)', badge: '🌑', icon: '🔥', description: 'Planície das Sepulturas e Fortaleza das Sombras.', accentColor: '#e63946' }
+    { id: 'all_regions', name: 'Todas as Regiões', badge: '🌍', icon: '✨', description: 'Terras Intermédias e Reino das Sombras.' },
+    { id: 'limgrave', name: 'Limgrave & Península', badge: '🌲', icon: '🏰', description: 'Castelo Tempesvéu, Primeira Graça e Península do Choro.' },
+    { id: 'liurnia', name: 'Liurnia dos Lagos', badge: '💧', icon: '🌙', description: 'Academia de Raya Lucaria e Platô Lunar.' },
+    { id: 'caelid', name: 'Caelid & Greyoll', badge: '🩸', icon: '☣️', description: 'Terras corrompidas pela Podridão e arena de Radahn.' },
+    { id: 'altus', name: 'Platô Altus & Gelmir', badge: '🍁', icon: '🌋', description: 'Planaltos dourados e a Mansão Vulcânica.' },
+    { id: 'leyndell', name: 'Leyndell Real', badge: '👑', icon: '🏛️', description: 'A gloriosa metrópole do trono de Marika.' },
+    { id: 'mountaintops', name: 'Montanhas & Neve', badge: '❄️', icon: '🏔️', description: 'Picos gélidos, Forja dos Gigantes e Campo de Neve.' },
+    { id: 'underground', name: 'Subterrâneo (Siofra/Nokron)', badge: '🌌', icon: '⭐', description: 'Cidades Eternas sob o firmamento estrelado subterrâneo.' },
+    { id: 'farum_azula', name: 'Farum Azula', badge: '🌪️', icon: '⚡', description: 'Templo flutuante ancestral dos Dragões Antigos.' },
+    { id: 'haligtree', name: 'Árvore Sacra', badge: '🌸', icon: '🗡️', description: 'Refúgio de Miquella e morada de Malenia.' },
+    { id: 'shadow_realm', name: 'Reino das Sombras (DLC)', badge: '🌑', icon: '🔥', description: 'Planície das Sepulturas, Belurat e Fortaleza das Sombras.' }
   ];
 
-  // --- 3. ITEMS DATABASE ---
+  // --- 3. BASE DE DADOS COMPLETA (Armas, Rapieiras, Katanas, Magias, Talismãs, Armaduras, etc.) ---
   const ITEMS_DATA = [
+    /* --- RAPIEIRAS & ESPADAS ESTOCANTES (Thrusting Swords) --- */
+    {
+      id: 'w_antspur_rapier',
+      name: 'Rapieira de Antspur (Antspur Rapier)',
+      nameEn: 'Antspur Rapier',
+      category: 'weapons',
+      subtype: 'Rapieiras & Estocadas',
+      region: 'altus',
+      location: 'Oeste de O Castelo Sombrio (Platô Altus)',
+      rarity: 'rare',
+      icon: '🗡️',
+      secretType: 'Invasor NPC',
+      requirements: { str: 10, dex: 20, int: 0, fai: 0, arc: 0 },
+      lore: 'Rapieira forjada a partir do aguilhão de uma formiga gigante. Aplica acúmulo devastador de Podridão Escarlate (Scarlet Rot) a cada golpe rápido.',
+      guide: 'Drop garantido ao derrotar o NPC invasor Maleghast, o Campeão dos Castellans, a oeste do Castelo Sombrio no Platô Altus.',
+      mapCoords: 'Campos a oeste do Castelo Sombrio, Platô Altus.'
+    },
+    {
+      id: 'w_rogiers_rapier',
+      name: 'Rapieira de Rogier (Rogier\'s Rapier +8)',
+      nameEn: 'Rogier\'s Rapier',
+      category: 'weapons',
+      subtype: 'Rapieiras & Estocadas',
+      region: 'limgrave',
+      location: 'Mesa-Redonda (Após derrotar Godrick)',
+      rarity: 'rare',
+      icon: '🗡️',
+      secretType: 'Quest NPC',
+      requirements: { str: 8, dex: 17, int: 0, fai: 0, arc: 0 },
+      lore: 'A nobre rapieira do Feiticeiro Rogier, imbuída com a Cinza de Guerra Falange Glintblade e já aprimorada no nível +8.',
+      guide: 'Fale com Rogier na capela do Castelo Tempesvéu. Após derrotar Godrick o Enxertado, encontre Rogier sentado na sacada da Mesa-Redonda para receber a arma.',
+      mapCoords: 'Sacada da Mesa-Redonda.'
+    },
+    {
+      id: 'w_frozen_needle',
+      name: 'Agulha Congelada / Rapieira de Gelo (Frozen Needle)',
+      nameEn: 'Frozen Needle',
+      category: 'weapons',
+      subtype: 'Rapieiras & Estocadas',
+      region: 'liurnia',
+      location: 'Ruínas de Kingsrealm (Liurnia dos Lagos)',
+      rarity: 'rare',
+      icon: '❄️',
+      secretType: 'Ilusão/Parede Falsa',
+      requirements: { str: 11, dex: 18, int: 0, fai: 0, arc: 0 },
+      lore: 'Rapieira forjada de gelo perene que dispara projéteis cortantes de gelo cristalino sem gastar nenhum FP em ataques fortes.',
+      guide: 'Nas Ruínas de Kingsrealm no noroeste de Liurnia, ataque o chão ilusório coberto por tijolos no pátio para revelar a escadaria secreta e derrote o chefe Royal Revenant.',
+      mapCoords: 'Porão ilusório das Ruínas de Kingsrealm, oeste de Liurnia.'
+    },
+    {
+      id: 'w_great_epee',
+      name: 'Grande Épée / Rapieira Pesada (Great Épée)',
+      nameEn: 'Great Epee',
+      category: 'weapons',
+      subtype: 'Rapieiras & Estocadas',
+      region: 'limgrave',
+      location: 'Acampamento ao sul do Lago Agheel (Limgrave)',
+      rarity: 'uncommon',
+      icon: '🗡️',
+      secretType: 'Baú Escondido',
+      requirements: { str: 15, dex: 16, int: 0, fai: 0, arc: 0 },
+      lore: 'Espada estocante pesada de alcance colossal que permite atacar protegido atrás de um escudo.',
+      guide: 'Dentro de um baú de madeira no acampamento de soldados de Godrick no topo do penhasco ao sul do Lago Agheel.',
+      mapCoords: 'Sul do Lago Agheel, Limgrave.'
+    },
+    {
+      id: 'w_cleanrot_knight_sword',
+      name: 'Espada Estocante de Cavaleiro Limpo (Cleanrot Rapier)',
+      nameEn: 'Cleanrot Knight\'s Sword',
+      category: 'weapons',
+      subtype: 'Rapieiras & Estocadas',
+      region: 'caelid',
+      location: 'Pântano de Aeonia (Caelid)',
+      rarity: 'rare',
+      icon: '🗡️',
+      secretType: 'Drop de Inimigo',
+      requirements: { str: 13, dex: 15, int: 0, fai: 0, arc: 0 },
+      lore: 'A rapieira longa empunhada pelos nobres Cavaleiros de Cleanrot de Malenia. Possui o maior alcance de estocada da categoria.',
+      guide: 'Drop dos Cavaleiros de Cleanrot que patrulham o Pântano de Aeonia em Caelid e a Árvore Sacra de Miquella.',
+      mapCoords: 'Pântano de Aeonia, centro de Caelid.'
+    },
+
+    /* --- ARMAS LENDÁRIAS & KATANAS --- */
     {
       id: 'w_dark_moon_greatsword',
-      name: 'Espada Grande da Lua Sombria',
+      name: 'Espada Grande da Lua Sombria (Dark Moon Greatsword)',
       nameEn: 'Dark Moon Greatsword',
       category: 'weapons',
-      subtype: 'Espadas Colossais',
+      subtype: 'Espadas Colossais & Grandes',
       region: 'liurnia',
       location: 'Catedral de Manus Celes (Platô Lunar)',
       rarity: 'legendary',
       icon: '🗡️',
       secretType: 'Quest NPC',
       requirements: { str: 16, dex: 11, int: 38, fai: 0, arc: 0 },
-      lore: 'Uma espada de luz lunar legada pelas rainhas de Caria aos seus consortes. Imbuída com o gelo místico da lua.',
-      guide: 'Recompensa final da linha de missões de Ranni. Após derrotar Astel, suba pelo elevador até o Platô Lunar e coloque o anel no dedo de Ranni.',
-      mapCoords: 'Sul do Platô de Liurnia.'
+      lore: 'A icônica Moonlight Greatsword das rainhas de Caria. Dispara ondas lunares gélidas de alto impacto.',
+      guide: 'Recompensa final da missão da Bruxa Ranni na Catedral de Manus Celes após derrotar Astel.',
+      mapCoords: 'Catedral de Manus Celes, Platô Lunar de Liurnia.'
     },
     {
       id: 'w_rivers_of_blood',
-      name: 'Rios de Sangue (Rivers of Blood)',
+      name: 'Rios de Sangue (Rivers of Blood Katana)',
       nameEn: 'Rivers of Blood',
       category: 'weapons',
-      subtype: 'Katanas',
+      subtype: 'Katanas & Sangramento',
       region: 'mountaintops',
       location: 'Igreja do Repouso (Montanha dos Gigantes)',
       rarity: 'rare',
       icon: '⚔️',
       secretType: 'Invasor NPC',
       requirements: { str: 12, dex: 18, int: 0, fai: 0, arc: 20 },
-      lore: 'Arma de Okina da Terra dos Juncos. Sua habilidade Empilhador de Cadáveres desencadeia lâminas de sangue velozes.',
-      guide: 'Ao se aproximar da Igreja do Repouso a leste das Montanhas dos Gigantes, derrote o invasor Okina.',
-      mapCoords: 'Leste do Lago Congelado, Montanha dos Gigantes.'
+      lore: 'Katana lendária de Okina com habilidade Empilhador de Cadáveres que dilacera em ondas de sangue.',
+      guide: 'Derrote o invasor Okina em frente à Igreja do Repouso a leste das Montanhas dos Gigantes.',
+      mapCoords: 'Leste do Lago Congelado, Montanhas dos Gigantes.'
+    },
+    {
+      id: 'w_moonveil',
+      name: 'Véu da Lua (Moonveil Katana)',
+      nameEn: 'Moonveil',
+      category: 'weapons',
+      subtype: 'Katanas & Sangramento',
+      region: 'caelid',
+      location: 'Túnel Gael (Fronteira Limgrave/Caelid)',
+      rarity: 'rare',
+      icon: '🌙',
+      secretType: 'Chefe de Masmorra',
+      requirements: { str: 12, dex: 18, int: 23, fai: 0, arc: 0 },
+      lore: 'Katana mágica forjada com Glintstone brilhante. Dispara cortes lunares verticais e horizontais devastadores.',
+      guide: 'Derrote o chefe Dragão de Magma no final do Túnel Gael entre Limgrave e Caelid.',
+      mapCoords: 'Túnel Gael, oeste de Caelid.'
     },
     {
       id: 'w_blasphemous_blade',
       name: 'Lâmina Blasfema (Blasphemous Blade)',
       nameEn: 'Blasphemous Blade',
       category: 'weapons',
-      subtype: 'Espadas Colossais',
+      subtype: 'Espadas Colossais & Grandes',
       region: 'altus',
       location: 'Mansão Vulcânica (Monte Gelmir)',
       rarity: 'legendary',
       icon: '🔥',
       secretType: 'Lembrança',
       requirements: { str: 22, dex: 15, int: 0, fai: 21, arc: 0 },
-      lore: 'Espada sagrada de Rykard mesclada com a Serpente Devoradora de Deuses. Drena a vitalidade dos inimigos abatidos.',
-      guide: 'Derrote Rykard na Mansão Vulcânica e troque a Lembrança com Enia na Mesa-Redonda.',
+      lore: 'Espada sagrada de Rykard mesclada à Serpente Devoradora de Deuses. Cura o jogador ao abater inimigos.',
+      guide: 'Derrote Rykard na Mansão Vulcânica e troque sua Lembrança na Mesa-Redonda.',
       mapCoords: 'Profundezas da Mansão Vulcânica, Monte Gelmir.'
     },
     {
@@ -89,32 +202,32 @@
       name: 'Raio de Gransax (Bolt of Gransax)',
       nameEn: 'Bolt of Gransax',
       category: 'weapons',
-      subtype: 'Lanças Pesadas',
+      subtype: 'Lanças & Hastes',
       region: 'leyndell',
       location: 'Lança Monumental de Gransax (Leyndell)',
       rarity: 'legendary',
       icon: '⚡',
       secretType: 'Exploração Secreta',
       requirements: { str: 20, dex: 40, int: 0, fai: 0, arc: 0 },
-      lore: 'Armamento lendário talhado da própria lança do Dragão Ancestral Gransax que perfurou as muralhas de Leyndell.',
-      guide: 'ATENÇÃO: Pegue antes de queimar a capital! Caminhe sobre a gigantesca lança de pedra fincada no centro da cidade.',
-      mapCoords: 'Centro de Leyndell, acima do pátio principal.'
+      lore: 'Armamento lendário talhado da lança do Dragão Ancestral Gransax que destruiu as muralhas reais.',
+      guide: 'Suba na gigantesca lança de pedra no pátio central de Leyndell antes de queimar a capital.',
+      mapCoords: 'Centro de Leyndell.'
     },
     {
       id: 'w_greatsword_guts',
-      name: 'Espada Grande (Greatsword / Guts)',
+      name: 'Espada Grande / Guts (Greatsword)',
       nameEn: 'Greatsword',
       category: 'weapons',
-      subtype: 'Espadas Colossais',
+      subtype: 'Espadas Colossais & Grandes',
       region: 'caelid',
       location: 'Carruagem Abandonada de Caelid',
       rarity: 'rare',
       icon: '🗡️',
       secretType: 'Baú Escondido',
       requirements: { str: 31, dex: 12, int: 0, fai: 0, arc: 0 },
-      lore: 'Pedaço de ferro bruto e colossal em homenagem ao espadachim negro Guts de Berserk.',
-      guide: 'No baú da carruagem preta abandonada na estrada principal no noroeste de Caelid.',
-      mapCoords: 'Estrada de Caelid, próximo à Varanda com Vista para a Podridão.'
+      lore: 'Pedaço de ferro bruto e colossal em homenagem ao guerreiro Guts de Berserk.',
+      guide: 'No baú da carruagem preta abandonada na estrada a noroeste de Caelid.',
+      mapCoords: 'Estrada de Caelid, perto da Varanda com Vista para a Podridão.'
     },
     {
       id: 'w_bloodhounds_fang',
@@ -128,25 +241,25 @@
       icon: '🐾',
       secretType: 'Chefe de Masmorra',
       requirements: { str: 18, dex: 17, int: 0, fai: 0, arc: 0 },
-      lore: 'Espada curva com sangramento inato e ataque de salto acrobático devastador.',
+      lore: 'Espada curva afiada como garras com sangramento inato e ataque acrobático com finta.',
       guide: 'Derrote o Cavaleiro Darriwil na Cadeia Eterna ao sul de Limgrave.',
       mapCoords: 'Colina ao sul de Limgrave.'
     },
     {
-      id: 'w_fingerprint_shield',
-      name: 'Escudo de Pedra da Digital',
-      nameEn: 'Fingerprint Stone Shield',
+      id: 'w_sacred_relic_sword',
+      name: 'Espada da Relíquia Sagrada (Sacred Relic Sword)',
+      nameEn: 'Sacred Relic Sword',
       category: 'weapons',
-      subtype: 'Escudos Grandes',
+      subtype: 'Espadas Colossais & Grandes',
       region: 'leyndell',
-      location: 'Fosso dos Três Dedos (Esgotos de Leyndell)',
+      location: 'Trono do Elden (Mesa-Redonda)',
       rarity: 'legendary',
-      icon: '🛡️',
-      secretType: 'Exploração Secreta',
-      requirements: { str: 48, dex: 0, int: 0, fai: 0, arc: 0 },
-      lore: 'O escudo com maior estabilidade do jogo, forjado em uma lápide queimada pela Chama Frenética.',
-      guide: 'Após derrotar Mohg o Agouro nos Esgotos de Leyndell, ataque o altar secreto e desça pelas lápides.',
-      mapCoords: 'Profundezas dos Esgotos de Leyndell.'
+      icon: '✨',
+      secretType: 'Lembrança',
+      requirements: { str: 14, dex: 24, int: 0, fai: 22, arc: 0 },
+      lore: 'Forjada do cadáver divino da Fera de Elden. Sua Onda de Ouro varre hordas inteiras a longas distâncias.',
+      guide: 'Troque a Lembrança do Elden após derrotar o chefe final Radagon e a Fera de Elden.',
+      mapCoords: 'Trono de Elden, Mesa-Redonda.'
     },
     {
       id: 'w_backhand_blade',
@@ -164,14 +277,30 @@
       guide: 'Em um pequeno mausoléu ao ar livre a nordeste do primeiro Ponto de Graça da Planície das Sepulturas.',
       mapCoords: 'Nordeste da Planície das Sepulturas, Reino das Sombras.'
     },
+    {
+      id: 'w_fingerprint_shield',
+      name: 'Escudo de Pedra da Digital (Fingerprint Stone Shield)',
+      nameEn: 'Fingerprint Stone Shield',
+      category: 'weapons',
+      subtype: 'Escudos Grandes',
+      region: 'leyndell',
+      location: 'Fosso dos Três Dedos (Esgotos de Leyndell)',
+      rarity: 'legendary',
+      icon: '🛡️',
+      secretType: 'Exploração Secreta',
+      requirements: { str: 48, dex: 0, int: 0, fai: 0, arc: 0 },
+      lore: 'O escudo com maior estabilidade de todo o jogo, forjado em uma lápide queimada pela Chama Frenética.',
+      guide: 'Após derrotar Mohg o Agouro nos Esgotos de Leyndell, ataque o altar secreto e desça pelas lápides.',
+      mapCoords: 'Profundezas dos Esgotos de Leyndell.'
+    },
 
-    // Talismãs
+    /* --- TALISMÃS LENDÁRIOS --- */
     {
       id: 't_radagon_soreseal',
       name: 'Selo Doloroso de Radagon (Radagon\'s Soreseal)',
       nameEn: 'Radagon\'s Soreseal',
       category: 'talismans',
-      subtype: 'Lendários',
+      subtype: 'Lendários & Atributos',
       region: 'caelid',
       location: 'Forte Faroth (Monte Dragão)',
       rarity: 'legendary',
@@ -194,13 +323,13 @@
       icon: '🏺',
       secretType: 'Quest NPC',
       requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-      lore: 'Aumenta o poder de ataque de todas as Habilidades de Armas (Cinzas da Guerra) em 15%.',
+      lore: 'Fragmento do Guerreiro Pote Alexander. Aumenta o poder de ataque de todas as Habilidades de Armas em 15%.',
       guide: 'Complete a linha de missões de Alexander e duele com ele no topo da arena em ruínas de Farum Azula.',
       mapCoords: 'Templo dos Dragões, Farum Azula.'
     },
     {
       id: 't_bull_goats_talisman',
-      name: 'Talismã do Bode-Touro',
+      name: 'Talismã do Bode-Touro (Bull-Goat Talisman)',
       nameEn: 'Bull-Goat\'s Talisman',
       category: 'talismans',
       subtype: 'Defensivos',
@@ -216,10 +345,10 @@
     },
     {
       id: 't_green_turtle_talisman',
-      name: 'Talismã da Tartaruga Verde',
+      name: 'Talismã da Tartaruga Verde (Green Turtle Talisman)',
       nameEn: 'Green Turtle Talisman',
       category: 'talismans',
-      subtype: 'Cura & FP',
+      subtype: 'Cura & Vigor',
       region: 'limgrave',
       location: 'Vila Summonwater (Limgrave)',
       rarity: 'uncommon',
@@ -230,11 +359,27 @@
       guide: 'Na Vila Summonwater, desça pelo porão trancado com estátua de espada de pedra (use 1 Chave) e abra o baú.',
       mapCoords: 'Leste de Limgrave, Vila Summonwater.'
     },
+    {
+      id: 't_erdtree_favor_2',
+      name: 'Favor da Térvore +2 (Erdtree\'s Favor +2)',
+      nameEn: 'Erdtree\'s Favor +2',
+      category: 'talismans',
+      subtype: 'Lendários & Atributos',
+      region: 'leyndell',
+      location: 'Leyndell, Capital das Cinzas',
+      rarity: 'legendary',
+      icon: '🌿',
+      secretType: 'Exploração Secreta',
+      requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
+      lore: 'Aumenta significativamente a Vida Máxima (+4%), Vigor (+10%) e Carga Máxima de Equipamento (+8%).',
+      guide: 'Acessível após transformar a capital em cinzas. Desça pelo lago de cinzas guardado por Espíritos das Árvores.',
+      mapCoords: 'Pátio coberto de cinzas de Leyndell.'
+    },
 
-    // Magias & Feitiços
+    /* --- FEITIÇARIAS & ENCANTAMENTOS --- */
     {
       id: 's_comet_azur',
-      name: 'Cometa Azur (Comet Azur)',
+      name: 'Cometa Azur (Comet Azur Sorcery)',
       nameEn: 'Comet Azur',
       category: 'spells',
       subtype: 'Feitiçarias Primevas',
@@ -249,18 +394,34 @@
       mapCoords: 'Acampamento do Eremita, sul do Monte Gelmir.'
     },
     {
+      id: 's_rannis_dark_moon',
+      name: 'Lua Sombria de Ranni (Ranni\'s Dark Moon)',
+      nameEn: 'Ranni\'s Dark Moon',
+      category: 'spells',
+      subtype: 'Feitiçarias Primevas',
+      region: 'liurnia',
+      location: 'Torre de Chelona (Platô Lunar)',
+      rarity: 'legendary',
+      icon: '🌙',
+      secretType: 'Exploração Secreta',
+      requirements: { str: 0, dex: 0, int: 68, fai: 0, arc: 0 },
+      lore: 'Invoca uma lua sombria gélida que dissipa magias inimigas e reduz a defesa mágica do alvo em 10%.',
+      guide: 'Resolva o enigma das 3 grandes tartarugas sábias na Torre de Chelona no Platô Lunar.',
+      mapCoords: 'Extremo sul do Platô Lunar de Liurnia.'
+    },
+    {
       id: 's_golden_vow',
-      name: 'Voto Dourado (Golden Vow)',
+      name: 'Voto Dourado (Golden Vow Incantation)',
       nameEn: 'Golden Vow',
       category: 'spells',
-      subtype: 'Linhagem Divina',
+      subtype: 'Encantamentos Divinos',
       region: 'altus',
       location: 'Cabana do Cadáver Fedorento (Monte Gelmir)',
       rarity: 'rare',
       icon: '☀️',
       secretType: 'Exploração Secreta',
       requirements: { str: 0, dex: 0, int: 0, fai: 25, arc: 0 },
-      lore: 'Concede +15% de poder de ataque e +10% de defesa por 80 segundos.',
+      lore: 'Concede +15% de poder de ataque e +10% de negação de dano para o jogador e aliados.',
       guide: 'Em um cadáver dentro da Cabana do Cadáver Fedorento no Monte Gelmir.',
       mapCoords: 'Nordeste do Monte Gelmir.'
     },
@@ -276,12 +437,12 @@
       icon: '☣️',
       secretType: 'Altar de Dragão',
       requirements: { str: 0, dex: 0, int: 0, fai: 15, arc: 12 },
-      lore: 'Expide uma névoa densa de Podridão Escarlate que devora a vida dos chefes.',
+      lore: 'Expide uma névoa densa de Podridão Escarlate que devora a vida dos chefes mais resistentes.',
       guide: 'Troque 1 Coração de Dragão no Altar da Catedral da Comunhão do Dragão em Caelid.',
       mapCoords: 'Sul de Caelid, Catedral da Comunhão do Dragão.'
     },
 
-    // Cinzas da Guerra
+    /* --- CINZAS DA GUERRA --- */
     {
       id: 'a_lions_claw',
       name: 'Garra do Leão (Lion\'s Claw)',
@@ -294,31 +455,47 @@
       icon: '🦁',
       secretType: 'Chefe de Masmorra',
       requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-      lore: 'Golpe com cambalhota mortal frontal que quebra a postura dos inimigos.',
+      lore: 'Golpe mortal frontal de Artorias que quebra a postura de chefes.',
       guide: 'Derrote o Leão Guardião no pátio interno do Forte Gael em Caelid.',
       mapCoords: 'Pátio interno do Forte Gael, sudoeste de Caelid.'
     },
     {
-      id: 'a_flame_of_the_redmanes',
-      name: 'Chamas dos Redmanes (Flame of the Redmanes)',
-      nameEn: 'Flame of the Redmanes',
+      id: 'a_bloodhounds_step',
+      name: 'Passo do Cão de Caça (Bloodhound\'s Step)',
+      nameEn: 'Bloodhound\'s Step',
       category: 'ashes',
-      subtype: 'Afinidade Fogo',
+      subtype: 'Afinidade Afiada',
       region: 'caelid',
-      location: 'Forte Gael (Arredores de Caelid)',
+      location: 'Torre de Lenne (Monte Dragão)',
       rarity: 'rare',
-      icon: '🔥',
+      icon: '💨',
+      secretType: 'Chefe Noturno',
+      requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
+      lore: 'Permite esquivas a velocidades inacreditáveis com invulnerabilidade estendida.',
+      guide: 'Derrote o Cavaleiro da Noite na ponte ao lado da Torre de Lenne durante a NOITE.',
+      mapCoords: 'Ponte da Torre de Lenne, Caelid.'
+    },
+    {
+      id: 'a_seppuku',
+      name: 'Seppuku (Ash of War: Seppuku)',
+      nameEn: 'Seppuku',
+      category: 'ashes',
+      subtype: 'Afinidade Sangue',
+      region: 'mountaintops',
+      location: 'Lago Congelado (Montanhas dos Gigantes)',
+      rarity: 'rare',
+      icon: '🩸',
       secretType: 'Escaravelho Invisível',
       requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-      lore: 'Dispara um leque largo de chamas ardentes com alto dano de postura.',
-      guide: 'Ataque o Escaravelho Invisível que corre em círculos em frente ao Forte Gael.',
-      mapCoords: 'Frente do Forte Gael, Caelid.'
+      lore: 'Banha a lâmina no próprio sangue, aumentando o dano e o acúmulo de sangramento.',
+      guide: 'Ataque o Escaravelho Invisível que corre sobre o gelo no Lago Congelado.',
+      mapCoords: 'Extremo leste do Lago Congelado.'
     },
 
-    // Itens Chave
+    /* --- ITENS CHAVE, LÁGRIMAS & FRASCOS --- */
     {
       id: 'k_flask_of_wondrous_physick',
-      name: 'Frasco de Elixir Magnífico',
+      name: 'Frasco de Elixir Magnífico (Flask of Wondrous Physick)',
       nameEn: 'Flask of Wondrous Physick',
       category: 'key_items',
       subtype: 'Frascos Sagrados',
@@ -397,7 +574,7 @@
       mapCoords: 'Sul da Planície das Sepulturas, Igreja da Consolação.'
     },
 
-    // Armaduras
+    /* --- ARMADURAS --- */
     {
       id: 'ar_bull_goat_set',
       name: 'Conjunto do Bode-Touro (Bull-Goat Set)',
@@ -431,10 +608,10 @@
       mapCoords: 'Abaixo da ponte de Ordina, Campo de Neve Consagrado.'
     },
 
-    // Chefes
+    /* --- CHEFES & LEMBRANÇAS --- */
     {
       id: 'b_malenia_blade_of_miquella',
-      name: 'Malenia, Espada de Miquella',
+      name: 'Malenia, Espada de Miquella (Malenia Boss)',
       nameEn: 'Malenia, Blade of Miquella',
       category: 'bosses',
       subtype: 'Portadores de Runa',
@@ -449,8 +626,24 @@
       mapCoords: 'Câmara mais profunda de Elphael, Árvore Sacra.'
     },
     {
+      id: 'b_starscourge_radahn',
+      name: 'General Radahn, Flagelo Estelar (Radahn Boss)',
+      nameEn: 'Starscourge Radahn',
+      category: 'bosses',
+      subtype: 'Portadores de Runa',
+      region: 'caelid',
+      location: 'Castelo da Juba Vermelha (Caelid)',
+      rarity: 'legendary',
+      icon: '☄️',
+      secretType: 'Festival de Combate',
+      requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
+      lore: 'O semideus mais poderoso das Terras Intermédias que subjugou as estrelas com gravidade.',
+      guide: 'Inicie o Festival de Radahn no Castelo da Juba Vermelha em Caelid.',
+      mapCoords: 'Dunas do litoral sul de Caelid.'
+    },
+    {
       id: 'b_bayle_the_dread',
-      name: 'Bayle, o Pavoroso (DLC)',
+      name: 'Bayle, o Pavoroso (Bayle the Dread DLC)',
       nameEn: 'Bayle the Dread',
       category: 'bosses',
       subtype: 'Dragões Antigos',
@@ -466,7 +659,7 @@
     }
   ];
 
-  // --- 4. BUILD PRESETS ---
+  // --- 4. PRESETS DE BUILD ---
   const BUILD_PRESETS = [
     { id: 'all_build', name: 'Todos os Itens', stats: { str: 99, dex: 99, int: 99, fai: 99, arc: 99 } },
     { id: 'bleed_samurai', name: '🩸 Samurai de Sangue', stats: { str: 18, dex: 50, int: 9, fai: 15, arc: 45 } },
@@ -475,7 +668,56 @@
     { id: 'golden_paladin', name: '☀️ Paladino Dourado', stats: { str: 30, dex: 15, int: 9, fai: 60, arc: 9 } }
   ];
 
-  // --- 5. DATA COUNTS HELPER ---
+  // --- 5. BUSCA INTELIGENTE COM SINÔNIMOS & TOLERÂNCIA A ACENTOS ---
+  function matchItemSearch(item, rawQuery) {
+    if (!rawQuery) return true;
+    const cleanQ = normalizeText(rawQuery);
+    if (!cleanQ) return true;
+
+    const tokens = cleanQ.split(' ').filter(Boolean);
+
+    // Texto do item normalizado (sem acentos)
+    const itemNorm = normalizeText(`
+      ${item.name} 
+      ${item.nameEn || ''} 
+      ${item.subtype || ''} 
+      ${item.category || ''} 
+      ${item.location || ''} 
+      ${item.lore || ''} 
+      ${item.guide || ''} 
+      ${item.secretType || ''}
+    `);
+
+    // Mapeamento de sinônimos comuns (ex: rapiera -> rapieira/estocada/rapier)
+    const SYNONYM_MAP = {
+      'rapiera': ['rapieira', 'estoc', 'rapier', 'agulha', 'espadim'],
+      'rapieira': ['rapiera', 'estoc', 'rapier', 'agulha'],
+      'rapier': ['rapieira', 'rapiera', 'estoc'],
+      'katana': ['katana', 'juncos', 'espada oriental', 'uchigatana', 'nagakiba', 'sangue'],
+      'sangue': ['sangramento', 'blood', 'hemorragia', 'okina', 'mohg'],
+      'fogo': ['fire', 'chama', 'flame', 'blasphemous', 'gigante'],
+      'gelo': ['frost', 'congelamento', 'ice', 'moonlight', 'ranni'],
+      'raio': ['lightning', 'relampago', 'trovao', 'gransax'],
+      'magia': ['sorcery', 'glintstone', 'azur', 'lucaria', 'luar'],
+      'colossal': ['greatsword', 'guts', 'pesada', 'esmagamento'],
+      'dlc': ['shadow', 'sombras', 'scadutree', 'reino', 'bayle', 'messmer']
+    };
+
+    // Para cada token digitado, verifica se está no item ou nos seus sinônimos
+    return tokens.every(token => {
+      if (itemNorm.includes(token)) return true;
+
+      // Verifica sinônimos
+      for (const [key, synList] of Object.entries(SYNONYM_MAP)) {
+        if (token === key || key.includes(token)) {
+          if (synList.some(syn => itemNorm.includes(syn))) return true;
+        }
+      }
+      return false;
+    });
+  }
+
+  // --- 6. DATA COUNTS ---
   function getCounts(acquiredIds = []) {
     const total = ITEMS_DATA.length;
     const acquired = acquiredIds.filter(id => ITEMS_DATA.some(item => item.id === id)).length;
@@ -500,9 +742,8 @@
     return { total, acquired, missing: total - acquired, percentage, byCategory, byRegion };
   }
 
-  // --- 6. FILTERING & SEARCH ---
+  // --- 7. FILTER ITEMS ---
   function filterItems(state) {
-    const q = (state.searchQuery || '').trim().toLowerCase();
     const curStats = state.userStats;
 
     return ITEMS_DATA.filter(item => {
@@ -523,16 +764,13 @@
         }
       }
 
-      if (q) {
-        const text = `${item.name} ${item.nameEn || ''} ${item.subtype || ''} ${item.location || ''} ${item.lore || ''} ${item.guide || ''}`.toLowerCase();
-        if (!text.includes(q)) return false;
-      }
-      return true;
+      // Busca semântica e tolerante a acentos
+      return matchItemSearch(item, state.searchQuery);
     });
   }
 
-  // --- 7. STORAGE & STATE ---
-  const STORAGE_KEY = 'eldentrack_save_data_v2';
+  // --- 8. STATE STORE ---
+  const STORAGE_KEY = 'eldentrack_save_data_v3';
   const Store = {
     saveData: null,
     acquiredIds: [],
@@ -559,7 +797,7 @@
           this.wishlistIds = this.saveData.characters?.[0]?.wishlist || [];
           this.soundEnabled = this.saveData.soundEnabled !== false;
         } else {
-          this.saveData = { characters: [{ name: 'Maculado das Terras Intermédias', build: 'Equilibrado', acquired: [], wishlist: [] }], soundEnabled: true };
+          this.saveData = { characters: [{ name: 'Maculado', acquired: [], wishlist: [] }], soundEnabled: true };
         }
       } catch (e) {
         this.saveData = { characters: [{ name: 'Maculado', acquired: [], wishlist: [] }], soundEnabled: true };
@@ -668,7 +906,7 @@
     }
   };
 
-  // --- 8. AUDIO FEEDBACK ---
+  // --- 9. AUDIO FEEDBACK ---
   const AudioEngine = {
     playChime() {
       if (!Store.soundEnabled) return;
@@ -710,7 +948,7 @@
     }
   };
 
-  // --- 9. PARTICLES ENGINE (Grace Embers) ---
+  // --- 10. GRACE PARTICLES ENGINE ---
   function initGraceParticles() {
     let canvas = document.getElementById('grace-particles-canvas');
     if (!canvas) {
@@ -727,12 +965,12 @@
       height = canvas.height = window.innerHeight;
     });
 
-    const particles = Array.from({ length: 38 }, () => ({
+    const particles = Array.from({ length: 35 }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      size: Math.random() * 2.2 + 0.8,
-      speedY: Math.random() * 0.45 + 0.15,
-      speedX: (Math.random() - 0.5) * 0.25,
+      size: Math.random() * 2 + 0.8,
+      speedY: Math.random() * 0.4 + 0.15,
+      speedX: (Math.random() - 0.5) * 0.2,
       opacity: Math.random() * 0.7 + 0.2,
       pulse: Math.random() * Math.PI
     }));
@@ -761,7 +999,7 @@
     loop();
   }
 
-  // --- 10. UI COMPONENTS RENDERER ---
+  // --- 11. UI RENDERING ---
   const UI = {
     renderHeader(state) {
       const s = state.stats;
@@ -783,7 +1021,8 @@
           <div class="header-center">
             <div class="search-wrapper">
               <span class="search-icon">🔍</span>
-              <input type="text" class="search-input" id="search-input" placeholder="Buscar armas, feitiços, talismãs, locais..." value="${state.searchQuery || ''}" autocomplete="off" />
+              <input type="text" class="search-input" id="search-input" placeholder="Buscar armas, rapieiras, feitiços, talismãs, locais..." value="${state.searchQuery || ''}" autocomplete="off" />
+              ${state.searchQuery ? `<button class="btn btn-ghost" id="search-clear-quick" style="position: absolute; right: 60px; top: 50%; transform: translateY(-50%); padding: 2px 6px; font-size: 0.8rem; color: var(--gold-light);">✕</button>` : ''}
               <span class="search-shortcut">Ctrl+K</span>
             </div>
           </div>
@@ -880,6 +1119,21 @@
         </button>
       `).join('');
 
+      // Sugestões rápidas de busca
+      const quickSearches = [
+        { label: '🗡️ Rapieiras', query: 'rapiera' },
+        { label: '⚔️ Katanas', query: 'katana' },
+        { label: '🩸 Sangue', query: 'sangue' },
+        { label: '🌙 Lua Sombria', query: 'lua' },
+        { label: '🔥 Blasfema', query: 'blasfema' },
+        { label: '⭐ Lendários', query: 'lendario' },
+        { label: '🌑 DLC Sombras', query: 'dlc' }
+      ].map(q => `
+        <button class="btn btn-ghost" data-quick-search="${q.query}" style="padding: 3px 10px; font-size: 0.76rem; border-radius: 99px; background: rgba(212,175,55,0.06); border: 1px solid rgba(212,175,55,0.15);">
+          ${q.label}
+        </button>
+      `).join('');
+
       return `
         <div class="filter-container">
           ${this.renderRegionStrip(state)}
@@ -887,6 +1141,12 @@
 
           <!-- Categories Chips -->
           <div class="categories-scroll">${cats}</div>
+
+          <!-- Quick Search Suggestions -->
+          <div style="display: flex; align-items: center; gap: 6px; overflow-x: auto; padding: 2px 0;">
+            <span style="font-size: 0.74rem; color: var(--gold-muted); font-weight: 500; text-transform: uppercase; white-space: nowrap;">Buscas Rápidas:</span>
+            ${quickSearches}
+          </div>
 
           <!-- Sub Filters Row -->
           <div class="sub-filters-row">
@@ -1092,7 +1352,7 @@
     }
   };
 
-  // --- 11. BOOTSTRAP & DOM EVENT DELEGATION ---
+  // --- 12. BOOTSTRAP & EVENT DELEGATION ---
   function initApp() {
     Store.init();
     initGraceParticles();
@@ -1104,7 +1364,7 @@
     const modalRoot = document.getElementById('modal-root');
     const statsModalRoot = document.getElementById('stats-modal-root');
 
-    // 1. Renderiza o Header uma única vez para NUNCA perder o foco do input
+    // 1. Renderiza Header inicial uma única vez
     if (headerRoot) {
       headerRoot.innerHTML = UI.renderHeader(Store.getState());
     }
@@ -1112,7 +1372,7 @@
     function updateAppView(meta = {}) {
       const state = Store.getState();
 
-      // Atualiza stats do Header sem recriar o input
+      // Atualiza stats do Header
       const pText = document.getElementById('header-progress-text');
       if (pText) pText.textContent = `${state.stats.percentage}%`;
       const pSvg = document.getElementById('header-progress-svg-path');
@@ -1127,7 +1387,7 @@
         `;
       }
 
-      // Se não for evento de digitação, atualiza a barra de filtros
+      // Se não for digitação contínua, atualiza a barra de filtros
       if (!meta.isSearch && filterBarRoot) {
         filterBarRoot.innerHTML = UI.renderFilterBar(state);
       }
@@ -1143,11 +1403,23 @@
                 <div class="empty-icon">🕯️</div>
                 <div class="empty-title">Nenhum Segredo Encontrado</div>
                 <p class="empty-desc">Nenhum item corresponde à busca "${state.searchQuery}" ou filtros selecionados.</p>
+                <div style="margin-top: 14px;">
+                  <button class="btn btn-gold" id="clear-filters-btn" style="padding: 6px 16px; font-size: 0.85rem;">
+                    ✕ Limpar Busca e Ver Todos os Itens
+                  </button>
+                </div>
               </div>
             `;
           } else {
+            const searchCountInfo = state.searchQuery ? `
+              <div style="grid-column: 1 / -1; font-size: 0.85rem; color: var(--gold-light); display: flex; align-items: center; justify-content: space-between; background: rgba(212,175,55,0.08); padding: 8px 14px; border-radius: var(--radius-md); border: 1px solid rgba(212,175,55,0.2);">
+                <span>🔍 <strong>${state.items.length}</strong> segredo(s) encontrado(s) para "<em>${state.searchQuery}</em>"</span>
+                <button class="btn btn-ghost" id="clear-search-link" style="padding: 2px 8px; font-size: 0.78rem; color: var(--gold-bright);">✕ Limpar</button>
+              </div>
+            ` : '';
+
             const cardsHtml = state.items.map(item => UI.renderItemCard(item, state)).join('');
-            itemsGridView.innerHTML = `<div id="items-grid" class="items-grid">${cardsHtml}</div>`;
+            itemsGridView.innerHTML = `<div id="items-grid" class="items-grid">${searchCountInfo}${cardsHtml}</div>`;
           }
         }
       }
@@ -1161,7 +1433,7 @@
       }
     }
 
-    // Debounce no Search Input (sem recriar o input, sem perda de foco)
+    // Eventos de Busca & Inputs
     let searchTimer = null;
     document.addEventListener('input', (e) => {
       if (e.target.id === 'search-input') {
@@ -1169,7 +1441,7 @@
         const query = e.target.value;
         searchTimer = setTimeout(() => {
           Store.setSearchQuery(query);
-        }, 50);
+        }, 40);
       }
 
       if (e.target.classList.contains('stat-input-val')) {
@@ -1212,6 +1484,17 @@
         const id = detBtn ? detBtn.dataset.id : card.dataset.itemId;
         const item = ITEMS_DATA.find(i => i.id === id);
         if (item) Store.setSelectedItem(item);
+        return;
+      }
+
+      // Quick Search Suggestions
+      const quickSearchBtn = e.target.closest('[data-quick-search]');
+      if (quickSearchBtn) {
+        AudioEngine.playClick();
+        const query = quickSearchBtn.dataset.quickSearch;
+        const sInput = document.getElementById('search-input');
+        if (sInput) sInput.value = query;
+        Store.setSearchQuery(query);
         return;
       }
 
@@ -1279,8 +1562,8 @@
       // Modal Close
       if (e.target.id === 'modal-close-btn' || e.target.id === 'item-modal-overlay') { Store.setSelectedItem(null); return; }
 
-      // Clear Filters
-      if (e.target.id === 'clear-filters-btn' || e.target.closest('#brand-home-btn')) {
+      // Clear Filters & Clear Search
+      if (e.target.id === 'clear-filters-btn' || e.target.id === 'clear-search-link' || e.target.id === 'search-clear-quick' || e.target.closest('#brand-home-btn')) {
         AudioEngine.playClick();
         Store.activeCategory = 'all';
         Store.activeRegion = 'all_regions';

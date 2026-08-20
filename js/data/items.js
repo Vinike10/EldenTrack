@@ -1,57 +1,154 @@
 /* ==========================================================================
-   ELDENTRACK - EXTENDED ITEMS & SECRETS DATABASE (Fextralife & PT-BR Engine)
+   ELDENTRACK - BASE DE DADOS DE ITENS & SEGREDOS (ELDEN RING & SOTE)
+   Bilingual (PT-BR / EN) com guias passo a passo e localizações.
    ========================================================================== */
 
 export const ITEMS_DATA = [
-  /* --------------------------------------------------------------------------
-     1. ARMAS & ESCUDOS (Armas Lendárias, Katanas, Cajados, Escudos e DLC)
-     -------------------------------------------------------------------------- */
+  /* --- RAPIEIRAS & ESPADAS ESTOCANTES --- */
+  {
+    id: 'w_antspur_rapier',
+    name: 'Rapieira de Antspur (Antspur Rapier)',
+    nameEn: 'Antspur Rapier',
+    category: 'weapons',
+    subtype: 'Rapieiras & Estocadas',
+    region: 'altus',
+    location: 'Oeste de O Castelo Sombrio (Platô Altus)',
+    rarity: 'rare',
+    icon: '🗡️',
+    secretType: 'Invasor NPC',
+    requirements: { str: 10, dex: 20, int: 0, fai: 0, arc: 0 },
+    lore: 'Rapieira forjada a partir do aguilhão de uma formiga gigante. Aplica acúmulo devastador de Podridão Escarlate (Scarlet Rot) a cada golpe rápido.',
+    guide: 'Drop garantido ao derrotar o NPC invasor Maleghast, o Campeão dos Castellans, a oeste do Castelo Sombrio no Platô Altus.',
+    mapCoords: 'Campos a oeste do Castelo Sombrio, Platô Altus.'
+  },
+  {
+    id: 'w_rogiers_rapier',
+    name: 'Rapieira de Rogier (Rogier\'s Rapier +8)',
+    nameEn: 'Rogier\'s Rapier',
+    category: 'weapons',
+    subtype: 'Rapieiras & Estocadas',
+    region: 'limgrave',
+    location: 'Mesa-Redonda (Após derrotar Godrick)',
+    rarity: 'rare',
+    icon: '🗡️',
+    secretType: 'Quest NPC',
+    requirements: { str: 8, dex: 17, int: 0, fai: 0, arc: 0 },
+    lore: 'A nobre rapieira do Feiticeiro Rogier, imbuída com a Cinza de Guerra Falange Glintblade e já aprimorada no nível +8.',
+    guide: 'Fale com Rogier na capela do Castelo Tempesvéu. Após derrotar Godrick o Enxertado, encontre Rogier sentado na sacada da Mesa-Redonda para receber a arma.',
+    mapCoords: 'Sacada da Mesa-Redonda.'
+  },
+  {
+    id: 'w_frozen_needle',
+    name: 'Agulha Congelada / Rapieira de Gelo (Frozen Needle)',
+    nameEn: 'Frozen Needle',
+    category: 'weapons',
+    subtype: 'Rapieiras & Estocadas',
+    region: 'liurnia',
+    location: 'Ruínas de Kingsrealm (Liurnia dos Lagos)',
+    rarity: 'rare',
+    icon: '❄️',
+    secretType: 'Ilusão/Parede Falsa',
+    requirements: { str: 11, dex: 18, int: 0, fai: 0, arc: 0 },
+    lore: 'Rapieira forjada de gelo perene que dispara projéteis cortantes de gelo cristalino sem gastar nenhum FP em ataques fortes.',
+    guide: 'Nas Ruínas de Kingsrealm no noroeste de Liurnia, ataque o chão ilusório coberto por tijolos no pátio para revelar a escadaria secreta e derrote o chefe Royal Revenant.',
+    mapCoords: 'Porão ilusório das Ruínas de Kingsrealm, oeste de Liurnia.'
+  },
+  {
+    id: 'w_great_epee',
+    name: 'Grande Épée / Rapieira Pesada (Great Épée)',
+    nameEn: 'Great Epee',
+    category: 'weapons',
+    subtype: 'Rapieiras & Estocadas',
+    region: 'limgrave',
+    location: 'Acampamento ao sul do Lago Agheel (Limgrave)',
+    rarity: 'uncommon',
+    icon: '🗡️',
+    secretType: 'Baú Escondido',
+    requirements: { str: 15, dex: 16, int: 0, fai: 0, arc: 0 },
+    lore: 'Espada estocante pesada de alcance colossal que permite atacar protegido atrás de um escudo.',
+    guide: 'Dentro de um baú de madeira no acampamento de soldados de Godrick no topo do penhasco ao sul do Lago Agheel.',
+    mapCoords: 'Sul do Lago Agheel, Limgrave.'
+  },
+  {
+    id: 'w_cleanrot_knight_sword',
+    name: 'Espada Estocante de Cavaleiro Limpo (Cleanrot Rapier)',
+    nameEn: 'Cleanrot Knight\'s Sword',
+    category: 'weapons',
+    subtype: 'Rapieiras & Estocadas',
+    region: 'caelid',
+    location: 'Pântano de Aeonia (Caelid)',
+    rarity: 'rare',
+    icon: '🗡️',
+    secretType: 'Drop de Inimigo',
+    requirements: { str: 13, dex: 15, int: 0, fai: 0, arc: 0 },
+    lore: 'A rapieira longa empunhada pelos nobres Cavaleiros de Cleanrot de Malenia. Possui o maior alcance de estocada da categoria.',
+    guide: 'Drop dos Cavaleiros de Cleanrot que patrulham o Pântano de Aeonia em Caelid e a Árvore Sacra de Miquella.',
+    mapCoords: 'Pântano de Aeonia, centro de Caelid.'
+  },
+
+  /* --- ARMAS LENDÁRIAS & KATANAS --- */
   {
     id: 'w_dark_moon_greatsword',
     name: 'Espada Grande da Lua Sombria (Dark Moon Greatsword)',
     nameEn: 'Dark Moon Greatsword',
     category: 'weapons',
-    subtype: 'Espadas Colossais',
+    subtype: 'Espadas Colossais & Grandes',
     region: 'liurnia',
     location: 'Catedral de Manus Celes (Platô Lunar)',
     rarity: 'legendary',
     icon: '🗡️',
     secretType: 'Quest NPC',
     requirements: { str: 16, dex: 11, int: 38, fai: 0, arc: 0 },
-    lore: 'Uma espada de luz lunar legada pelas rainhas de Caria aos seus consortes. Imbuída com o gelo místico da lua.',
-    guide: 'Recompensa final da lendária linha de missões da Bruxa Ranni. Após derrotar Astel Filho das Estrelas Naturais, suba pelo elevador até o Platô Lunar, desça no buraco da Catedral de Manus Celes e coloque o Anel da Lua Sombria no dedo de Ranni.',
-    mapCoords: 'Sul do Platô de Liurnia, acessível apenas via missão subterrânea.'
+    lore: 'A icônica Moonlight Greatsword das rainhas de Caria. Dispara ondas lunares gélidas de alto impacto.',
+    guide: 'Recompensa final da missão da Bruxa Ranni na Catedral de Manus Celes após derrotar Astel.',
+    mapCoords: 'Catedral de Manus Celes, Platô Lunar de Liurnia.'
   },
   {
     id: 'w_rivers_of_blood',
-    name: 'Rios de Sangue (Rivers of Blood)',
+    name: 'Rios de Sangue (Rivers of Blood Katana)',
     nameEn: 'Rivers of Blood',
     category: 'weapons',
-    subtype: 'Katanas',
+    subtype: 'Katanas & Sangramento',
     region: 'mountaintops',
     location: 'Igreja do Repouso (Montanha dos Gigantes)',
     rarity: 'rare',
     icon: '⚔️',
     secretType: 'Invasor NPC',
     requirements: { str: 12, dex: 18, int: 0, fai: 0, arc: 20 },
-    lore: 'Arma do espadachim Okina da Terra dos Juncos. Sua habilidade Empilhador de Cadáveres desencadeia lâminas de sangue que dilaceram a carne.',
-    guide: 'Ao se aproximar da Igreja do Repouso a leste das Montanhas dos Gigantes (pouco antes da Forja dos Gigantes), o invasor Sangrento Okina atacará você. Derrote-o para obter a Katana e a Máscara de Okina (faça antes de derrotar o Gigante de Fogo).',
-    mapCoords: 'Leste do Lago Congelado, Montanha dos Gigantes.'
+    lore: 'Katana lendária de Okina com habilidade Empilhador de Cadáveres que dilacera em ondas de sangue.',
+    guide: 'Derrote o invasor Okina em frente à Igreja do Repouso a leste das Montanhas dos Gigantes.',
+    mapCoords: 'Leste do Lago Congelado, Montanhas dos Gigantes.'
+  },
+  {
+    id: 'w_moonveil',
+    name: 'Véu da Lua (Moonveil Katana)',
+    nameEn: 'Moonveil',
+    category: 'weapons',
+    subtype: 'Katanas & Sangramento',
+    region: 'caelid',
+    location: 'Túnel Gael (Fronteira Limgrave/Caelid)',
+    rarity: 'rare',
+    icon: '🌙',
+    secretType: 'Chefe de Masmorra',
+    requirements: { str: 12, dex: 18, int: 23, fai: 0, arc: 0 },
+    lore: 'Katana mágica forjada com Glintstone brilhante. Dispara cortes lunares verticais e horizontais devastadores.',
+    guide: 'Derrote o chefe Dragão de Magma no final do Túnel Gael entre Limgrave e Caelid.',
+    mapCoords: 'Túnel Gael, oeste de Caelid.'
   },
   {
     id: 'w_blasphemous_blade',
     name: 'Lâmina Blasfema (Blasphemous Blade)',
     nameEn: 'Blasphemous Blade',
     category: 'weapons',
-    subtype: 'Espadas Colossais',
+    subtype: 'Espadas Colossais & Grandes',
     region: 'altus',
     location: 'Mansão Vulcânica (Monte Gelmir)',
     rarity: 'legendary',
     icon: '🔥',
     secretType: 'Lembrança',
     requirements: { str: 22, dex: 15, int: 0, fai: 21, arc: 0 },
-    lore: 'Espada sagrada de Rykard, outrora Lorde Praetor, agora mesclada com a Serpente Devoradora de Deuses. Drena a vitalidade dos inimigos abatidos.',
-    guide: 'Derrote Rykard, Senhor da Blasfêmia na Mansão Vulcânica para receber a Lembrança do Blasfemo. Troque-a com Enia na Mesa-Redonda.',
+    lore: 'Espada sagrada de Rykard mesclada à Serpente Devoradora de Deuses. Cura o jogador ao abater inimigos.',
+    guide: 'Derrote Rykard na Mansão Vulcânica e troque sua Lembrança na Mesa-Redonda.',
     mapCoords: 'Profundezas da Mansão Vulcânica, Monte Gelmir.'
   },
   {
@@ -59,32 +156,32 @@ export const ITEMS_DATA = [
     name: 'Raio de Gransax (Bolt of Gransax)',
     nameEn: 'Bolt of Gransax',
     category: 'weapons',
-    subtype: 'Lanças Pesadas',
+    subtype: 'Lanças & Hastes',
     region: 'leyndell',
-    location: 'Lança Monumental de Gransax (Leyndell Real)',
+    location: 'Lança Monumental de Gransax (Leyndell)',
     rarity: 'legendary',
     icon: '⚡',
     secretType: 'Exploração Secreta',
     requirements: { str: 20, dex: 40, int: 0, fai: 0, arc: 0 },
-    lore: 'Armamento lendário talhado da própria lança do Dragão Ancestral Gransax que destruiu as muralhas de Leyndell.',
-    guide: 'ATENÇÃO: Item perdível! Antes de queimar a Térvore e transformar a capital em cinzas, suba no corrimão da sacada do Santuário da Térvore, desça pelas asas da lança de pedra colossal fincada na cidade.',
-    mapCoords: 'Centro de Leyndell, na gigantesca lança de pedra.'
+    lore: 'Armamento lendário talhado da lança do Dragão Ancestral Gransax que destruiu as muralhas reais.',
+    guide: 'Suba na gigantesca lança de pedra no pátio central de Leyndell antes de queimar a capital.',
+    mapCoords: 'Centro de Leyndell.'
   },
   {
-    id: 'w_sacred_relic_sword',
-    name: 'Espada da Relíquia Sagrada (Sacred Relic Sword)',
-    nameEn: 'Sacred Relic Sword',
+    id: 'w_greatsword_guts',
+    name: 'Espada Grande / Guts (Greatsword)',
+    nameEn: 'Greatsword',
     category: 'weapons',
-    subtype: 'Espadas Grandes',
-    region: 'leyndell',
-    location: 'Trono do Elden (Mesa-Redonda)',
-    rarity: 'legendary',
-    icon: '✨',
-    secretType: 'Lembrança',
-    requirements: { str: 14, dex: 24, int: 0, fai: 22, arc: 0 },
-    lore: 'Espada forjada dos restos do cadáver divino da Fera de Elden. Sua habilidade Onda de Ouro varre hordas inteiras a longas distâncias.',
-    guide: 'Recompensa obtida ao trocar a Lembrança do Elden com Enia após derrotar o chefe final Radagon e a Fera de Elden.',
-    mapCoords: 'Trono de Elden, boss final.'
+    subtype: 'Espadas Colossais & Grandes',
+    region: 'caelid',
+    location: 'Carruagem Abandonada de Caelid',
+    rarity: 'rare',
+    icon: '🗡️',
+    secretType: 'Baú Escondido',
+    requirements: { str: 31, dex: 12, int: 0, fai: 0, arc: 0 },
+    lore: 'Pedaço de ferro bruto e colossal em homenagem ao guerreiro Guts de Berserk.',
+    guide: 'No baú da carruagem preta abandonada na estrada a noroeste de Caelid.',
+    mapCoords: 'Estrada de Caelid, perto da Varanda com Vista para a Podridão.'
   },
   {
     id: 'w_bloodhounds_fang',
@@ -98,41 +195,9 @@ export const ITEMS_DATA = [
     icon: '🐾',
     secretType: 'Chefe de Masmorra',
     requirements: { str: 18, dex: 17, int: 0, fai: 0, arc: 0 },
-    lore: 'Espada curva afiada como garras de besta com sangramento inato e ataque de finta com salto acrobático devastador.',
-    guide: 'Derrote o Cavaleiro do Cão de Caça Darriwil na Cadeia Eterna ao sul de Limgrave (próximo à Ponte do Sacrifício). Você pode chamar Blaidd para ajudar se falou com ele nas Ruínas de Mistwood.',
-    mapCoords: 'Colina ao sul de Limgrave, antes da ponte para a Península do Choro.'
-  },
-  {
-    id: 'w_greatsword_guts',
-    name: 'Espada Grande (Greatsword / Guts)',
-    nameEn: 'Greatsword',
-    category: 'weapons',
-    subtype: 'Espadas Colossais',
-    region: 'caelid',
-    location: 'Carruagem Abandonada de Caelid',
-    rarity: 'rare',
-    icon: '🗡️',
-    secretType: 'Baú Escondido',
-    requirements: { str: 31, dex: 12, int: 0, fai: 0, arc: 0 },
-    lore: 'Pedaço de ferro bruto e colossal em homenagem ao lendário espadachim negro Guts de Berserk.',
-    guide: 'Dentro do baú traseiro da carruagem preta abandonada na estrada principal de Caelid, cercada por Corvos Monstruosos e Cães Mutantes.',
-    mapCoords: 'Estrada a noroeste de Caelid, próximo à Graça \'Varanda com Vista para a Podridão\'.'
-  },
-  {
-    id: 'w_fingerprint_shield',
-    name: 'Escudo de Pedra da Digital (Fingerprint Stone Shield)',
-    nameEn: 'Fingerprint Stone Shield',
-    category: 'weapons',
-    subtype: 'Escudos Grandes',
-    region: 'leyndell',
-    location: 'Fosso dos Três Dedos (Subterrâneo da Capital)',
-    rarity: 'legendary',
-    icon: '🛡️',
-    secretType: 'Exploração Secreta',
-    requirements: { str: 48, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'O escudo mais resistente de todo o jogo, feito de uma lápide colossal queimada pela Chama Frenética dos Três Dedos.',
-    guide: 'Após derrotar Mohg o Agouro nos Esgotos Subterrâneos de Leyndell, ataque o altar atrás dele para revelar uma passagem secreta e desça pelas lápides na parede.',
-    mapCoords: 'Profundezas dos Esgotos de Leyndell, câmara da Chama Frenética.'
+    lore: 'Espada curva afiada como garras com sangramento inato e ataque acrobático com finta.',
+    guide: 'Derrote o Cavaleiro Darriwil na Cadeia Eterna ao sul de Limgrave.',
+    mapCoords: 'Colina ao sul de Limgrave.'
   },
   {
     id: 'w_backhand_blade',
@@ -146,29 +211,43 @@ export const ITEMS_DATA = [
     icon: '⚔️',
     secretType: 'Exploração Secreta',
     requirements: { str: 10, dex: 13, int: 0, fai: 0, arc: 0 },
-    lore: 'Lâminas empunhadas ao contrário com ataques acrobáticos de esquiva e estocada veloz no flanco dos adversários.',
-    guide: 'Em um pequeno mausoléu ao ar livre a nordeste do primeiro Ponto de Graça da Planície das Sepulturas no Reino das Sombras.',
-    mapCoords: 'Nordeste da Planície das Sepulturas.'
+    lore: 'Lâminas empunhadas ao contrário com ataques acrobáticos de esquiva e estocada veloz no flanco.',
+    guide: 'Em um pequeno mausoléu ao ar livre a nordeste do primeiro Ponto de Graça da Planície das Sepulturas.',
+    mapCoords: 'Nordeste da Planície das Sepulturas, Reino das Sombras.'
+  },
+  {
+    id: 'w_fingerprint_shield',
+    name: 'Escudo de Pedra da Digital (Fingerprint Stone Shield)',
+    nameEn: 'Fingerprint Stone Shield',
+    category: 'weapons',
+    subtype: 'Escudos Grandes',
+    region: 'leyndell',
+    location: 'Fosso dos Três Dedos (Esgotos de Leyndell)',
+    rarity: 'legendary',
+    icon: '🛡️',
+    secretType: 'Exploração Secreta',
+    requirements: { str: 48, dex: 0, int: 0, fai: 0, arc: 0 },
+    lore: 'O escudo com maior estabilidade de todo o jogo, forjado em uma lápide queimada pela Chama Frenética.',
+    guide: 'Após derrotar Mohg o Agouro nos Esgotos de Leyndell, ataque o altar secreto e desça pelas lápides.',
+    mapCoords: 'Profundezas dos Esgotos de Leyndell.'
   },
 
-  /* --------------------------------------------------------------------------
-     2. TALISMÃS LENDÁRIOS & COMBATE
-     -------------------------------------------------------------------------- */
+  /* --- TALISMÃS LENDÁRIOS --- */
   {
     id: 't_radagon_soreseal',
     name: 'Selo Doloroso de Radagon (Radagon\'s Soreseal)',
     nameEn: 'Radagon\'s Soreseal',
     category: 'talismans',
-    subtype: 'Lendários',
+    subtype: 'Lendários & Atributos',
     region: 'caelid',
-    location: 'Forte Faroth (Monte Dragão de Greyoll)',
+    location: 'Forte Faroth (Monte Dragão)',
     rarity: 'legendary',
     icon: '💍',
     secretType: 'Baú Escondido',
     requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'Talismã lendário com o brasão de Radagon. Concede +5 em Vigor, Tolerância, Força e Destreza ao custo de receber +15% de dano.',
-    guide: 'Entre no Forte Faroth em Caelid. Suba as escadas para o telhado, pule na abertura do telhado com tábuas de madeira, desça pelas vigas até a sala protegida por ratos gigantes.',
-    mapCoords: 'Forte Faroth, leste do Monte Dragão Greyoll.'
+    lore: 'Concede +5 em Vigor, Tolerância, Força e Destreza ao custo de receber +15% de dano.',
+    guide: 'No Forte Faroth em Caelid, pule na abertura do telhado e desça pelas vigas até o baú protegido por ratos.',
+    mapCoords: 'Forte Faroth, leste de Caelid.'
   },
   {
     id: 't_shard_of_alexander',
@@ -182,13 +261,13 @@ export const ITEMS_DATA = [
     icon: '🏺',
     secretType: 'Quest NPC',
     requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'Fragmento do Guerreiro Pote Alexander. Aumenta o poder de ataque de todas as Habilidades de Armas (Cinzas da Guerra) em massivos 15%.',
-    guide: 'Complete a linha de missões de Alexander (Limgrave -> Túnel Gael -> Festival Radahn -> Monte Gelmir -> Farum Azula). Duele com ele no topo da arena de Farum Azula e derrote-o honrosamente.',
-    mapCoords: 'Templo dos Dragões, Farum Azula Despedaçada.'
+    lore: 'Fragmento do Guerreiro Pote Alexander. Aumenta o poder de ataque de todas as Habilidades de Armas em 15%.',
+    guide: 'Complete a linha de missões de Alexander e duele com ele no topo da arena em ruínas de Farum Azula.',
+    mapCoords: 'Templo dos Dragões, Farum Azula.'
   },
   {
     id: 't_bull_goats_talisman',
-    name: 'Talismã do Bode-Touro (Bull-Goat\'s Talisman)',
+    name: 'Talismã do Bode-Touro (Bull-Goat Talisman)',
     nameEn: 'Bull-Goat\'s Talisman',
     category: 'talismans',
     subtype: 'Defensivos',
@@ -198,8 +277,8 @@ export const ITEMS_DATA = [
     icon: '🐐',
     secretType: 'Baú Escondido',
     requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'Aumenta o Equilíbrio (Poise) do usuário em +33%, impedindo que seus ataques sejam interrompidos facilmente por golpes inimigos.',
-    guide: 'Encontrado na Caverna do Dragão no norte do Monte Dragão Greyoll, em uma câmara protegida por ursos gigantes.',
+    lore: 'Aumenta o Equilíbrio (Poise) do usuário em +33%, impedindo interrupção de ataques.',
+    guide: 'Na Caverna do Dragão ao norte de Caelid, em uma câmara com ursos gigantes.',
     mapCoords: 'Caverna do Dragão, norte de Caelid.'
   },
   {
@@ -207,56 +286,22 @@ export const ITEMS_DATA = [
     name: 'Talismã da Tartaruga Verde (Green Turtle Talisman)',
     nameEn: 'Green Turtle Talisman',
     category: 'talismans',
-    subtype: 'Cura & FP',
+    subtype: 'Cura & Vigor',
     region: 'limgrave',
     location: 'Vila Summonwater (Limgrave)',
     rarity: 'uncommon',
     icon: '🐢',
     secretType: 'Baú Escondido',
     requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'Aumenta a velocidade de recuperação de Vigor (Stamina) em 17%, essencial para esquivas e combos contínuos.',
-    guide: 'Na Vila Summonwater em Limgrave (após derrotar o Barqueiro Tibial), desça pelo porão trancado com estátua de espada de pedra (use 1 Chave de Espada de Pedra) e abra o baú.',
+    lore: 'Aumenta a velocidade de recuperação de Vigor (Stamina) em 17%.',
+    guide: 'Na Vila Summonwater, desça pelo porão trancado com estátua de espada de pedra (use 1 Chave) e abra o baú.',
     mapCoords: 'Leste de Limgrave, Vila Summonwater.'
   },
-  {
-    id: 't_lord_of_bloods_exultation',
-    name: 'Exultação do Senhor do Sangue (Lord of Blood\'s Exultation)',
-    nameEn: 'Lord of Blood\'s Exultation',
-    category: 'talismans',
-    subtype: 'Aumento de Dano',
-    region: 'leyndell',
-    location: 'Catacumbas de Leyndell (Esgotos)',
-    rarity: 'legendary',
-    icon: '🩸',
-    secretType: 'Chefe de Masmorra',
-    requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'Concede +20% de poder de ataque físico por 20 segundos sempre que qualquer sangramento ocorrer nas proximidades.',
-    guide: 'Derrote o chefe Esmar, Sacerdote de Sangue nas Catacumbas Subterrâneas de Leyndell.',
-    mapCoords: 'Profundezas dos Esgotos de Leyndell.'
-  },
-  {
-    id: 't_blade_of_mercy',
-    name: 'Lâmina da Misericórdia (Blade of Mercy)',
-    nameEn: 'Blade of Mercy',
-    category: 'talismans',
-    subtype: 'Lendários',
-    region: 'shadow_realm',
-    location: 'Ruínas Queimadas (Reino das Sombras)',
-    rarity: 'dlc',
-    icon: '🗡️',
-    secretType: 'Baú Escondido',
-    requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'Aumenta o poder de ataque em 20% por 20 segundos imediatamente após desferir um Acerto Crítico ou Reposte.',
-    guide: 'No topo da torre em ruínas no centro das Ruínas Queimadas, logo no início da Planície das Sepulturas no DLC.',
-    mapCoords: 'Ruínas Queimadas, Planície das Sepulturas.'
-  },
 
-  /* --------------------------------------------------------------------------
-     3. FEITIÇARIAS & ENCANTAMENTOS
-     -------------------------------------------------------------------------- */
+  /* --- FEITIÇARIAS & ENCANTAMENTOS --- */
   {
     id: 's_comet_azur',
-    name: 'Cometa Azur (Comet Azur)',
+    name: 'Cometa Azur (Comet Azur Sorcery)',
     nameEn: 'Comet Azur',
     category: 'spells',
     subtype: 'Feitiçarias Primevas',
@@ -266,25 +311,25 @@ export const ITEMS_DATA = [
     icon: '🌠',
     secretType: 'Quest NPC',
     requirements: { str: 0, dex: 0, int: 60, fai: 0, arc: 0 },
-    lore: 'Feitiçaria primeva lendária criada pelo Mestre Azur ao contemplar o abismo cósmico. Dispara um feixe contínuo avassalador de energia estelar.',
-    guide: 'Contorne o Monte Gelmir pela base (passando pelo Forte Laiedd e o Dragão de Magma). Próximo à Graça \'Primeval Sorcerer Azur\', interaja com o corpo cristalizado do Mestre Azur.',
+    lore: 'Feitiçaria primeva lendária que dispara um feixe contínuo avassalador de energia estelar.',
+    guide: 'Próximo à Graça \'Primeval Sorcerer Azur\' no Monte Gelmir, interaja com o corpo cristalizado do Mestre Azur.',
     mapCoords: 'Acampamento do Eremita, sul do Monte Gelmir.'
   },
   {
     id: 's_golden_vow',
-    name: 'Voto Dourado (Golden Vow)',
+    name: 'Voto Dourado (Golden Vow Incantation)',
     nameEn: 'Golden Vow',
     category: 'spells',
-    subtype: 'Linhagem Divina',
+    subtype: 'Encantamentos Divinos',
     region: 'altus',
     location: 'Cabana do Cadáver Fedorento (Monte Gelmir)',
     rarity: 'rare',
     icon: '☀️',
     secretType: 'Exploração Secreta',
     requirements: { str: 0, dex: 0, int: 0, fai: 25, arc: 0 },
-    lore: 'Encantamento lendário da capital que concede +15% de poder de ataque e +10% de negação de todo dano por 80 segundos para você e aliados.',
-    guide: 'Em um cadáver dentro da Cabana do Cadáver Fedorento no Monte Gelmir, guardada por um guerreiro de armadura pútrida.',
-    mapCoords: 'Nordeste do Monte Gelmir, perto do Platô Altus.'
+    lore: 'Concede +15% de poder de ataque e +10% de negação de dano para o jogador e aliados.',
+    guide: 'Em um cadáver dentro da Cabana do Cadáver Fedorento no Monte Gelmir.',
+    mapCoords: 'Nordeste do Monte Gelmir.'
   },
   {
     id: 's_rotten_breath',
@@ -298,157 +343,15 @@ export const ITEMS_DATA = [
     icon: '☣️',
     secretType: 'Altar de Dragão',
     requirements: { str: 0, dex: 0, int: 0, fai: 15, arc: 12 },
-    lore: 'Canaliza o poder dos dragões para expelir uma névoa densa de Podridão Escarlate que devora a vida dos chefes mais resistentes.',
-    guide: 'Derrote qualquer Dragão em Limgrave ou Liurnia para obter um Coração de Dragão. Troque-o no Altar da Catedral da Comunhão do Dragão em Caelid.',
+    lore: 'Expide uma névoa densa de Podridão Escarlate que devora a vida dos chefes mais resistentes.',
+    guide: 'Troque 1 Coração de Dragão no Altar da Catedral da Comunhão do Dragão em Caelid.',
     mapCoords: 'Sul de Caelid, Catedral da Comunhão do Dragão.'
   },
-  {
-    id: 's_terra_magica',
-    name: 'Terra Mágica (Terra Magica)',
-    nameEn: 'Terra Magica',
-    category: 'spells',
-    subtype: 'Feitiçarias Primevas',
-    region: 'liurnia',
-    location: 'Caverna de Cristal da Academia (Raya Lucaria)',
-    rarity: 'rare',
-    icon: '🔮',
-    secretType: 'Chefe de Masmorra',
-    requirements: { str: 0, dex: 0, int: 20, fai: 0, arc: 0 },
-    lore: 'Desenha um círculo mágico brilhante no chão que aumenta o dano de todas as feitiçarias em colossais +35% enquanto você estiver dentro.',
-    guide: 'Entre na Caverna de Cristal da Academia na base dos penhascos de Raya Lucaria. Derrote os chefes Cristalinos e pegue o elevador nos fundos até o topo da torre isolada.',
-    mapCoords: 'Torre oeste da Academia de Raya Lucaria.'
-  },
 
-  /* --------------------------------------------------------------------------
-     4. CINZAS DA GUERRA (Ashes of War)
-     -------------------------------------------------------------------------- */
-  {
-    id: 'a_lions_claw',
-    name: 'Garra do Leão (Lion\'s Claw)',
-    nameEn: 'Lion\'s Claw',
-    category: 'ashes',
-    subtype: 'Afinidade Pesada',
-    region: 'caelid',
-    location: 'Forte Gael (Caelid)',
-    rarity: 'rare',
-    icon: '🦁',
-    secretType: 'Chefe de Masmorra',
-    requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'Habilidade lendária inspirada no golpe de cambalhota mortal de Artorias. Executa um salto frontal com esmagamento devastador de postura.',
-    guide: 'Derrote o Leão Guardião com lâminas nas patas no pátio interno do Forte Gael em Caelid.',
-    mapCoords: 'Pátio interno do Forte Gael, sudoeste de Caelid.'
-  },
-  {
-    id: 'a_flame_of_the_redmanes',
-    name: 'Chamas dos Redmanes (Flame of the Redmanes)',
-    nameEn: 'Flame of the Redmanes',
-    category: 'ashes',
-    subtype: 'Afinidade Fogo',
-    region: 'caelid',
-    location: 'Forte Gael (Arredores de Caelid)',
-    rarity: 'rare',
-    icon: '🔥',
-    secretType: 'Escaravelho Invisível',
-    requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'Dispara um leque largo de chamas ardentes que causa altíssimo dano de quebra de equilíbrio em grupos de inimigos.',
-    guide: 'Ataque o Escaravelho Invisível que corre em círculos em frente à entrada do Forte Gael em Caelid.',
-    mapCoords: 'Frente do Forte Gael, Caelid.'
-  },
-
-  /* --------------------------------------------------------------------------
-     5. ITENS CHAVE, LÁGRIMAS & FRASCOS
-     -------------------------------------------------------------------------- */
-  {
-    id: 'k_flask_of_wondrous_physick',
-    name: 'Frasco de Elixir Magnífico (Flask of Wondrous Physick)',
-    nameEn: 'Flask of Wondrous Physick',
-    category: 'key_items',
-    subtype: 'Frascos Sagrados',
-    region: 'limgrave',
-    location: 'Terceira Igreja de Marika (Limgrave)',
-    rarity: 'legendary',
-    icon: '🧪',
-    secretType: 'Exploração Secreta',
-    requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'Recipiente sagrado capaz de combinar Lágrimas Cristalinas para conceder efeitos milagrosos (FP infinito, imunidade, dano elemental).',
-    guide: 'Repousa no altar diante da estátua de Marika na Terceira Igreja de Marika a leste de Limgrave.',
-    mapCoords: 'Leste de Limgrave, Terceira Igreja de Marika.'
-  },
-  {
-    id: 'k_sacred_tear_pilgrimage',
-    name: 'Lágrima Sagrada (Igreja da Peregrinação)',
-    nameEn: 'Sacred Tear',
-    category: 'key_items',
-    subtype: 'Lágrimas Sagradas',
-    region: 'limgrave',
-    location: 'Igreja da Peregrinação (Península do Choro)',
-    rarity: 'rare',
-    icon: '💧',
-    secretType: 'Exploração Secreta',
-    requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'Aumenta permanentemente a potência de recuperação de Vida e FP dos Frascos de Lágrimas Carmesim e Cerúlea.',
-    guide: 'Localizada no altar diante da estátua na Igreja da Peregrinação, no topo da colina norte da Península do Choro.',
-    mapCoords: 'Península do Choro, Igreja da Peregrinação.'
-  },
-  {
-    id: 'k_golden_seed_stormveil',
-    name: 'Semente Dourada (Castelo Tempesvéu)',
-    nameEn: 'Golden Seed',
-    category: 'key_items',
-    subtype: 'Sementes Douradas',
-    region: 'limgrave',
-    location: 'Pátio de Tempesvéu (Próximo a Nepheli Loux)',
-    rarity: 'rare',
-    icon: '🌱',
-    secretType: 'Broto da Térvore',
-    requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'Aumenta permanentemente a quantidade máxima de Frascos que você pode carregar nos Pontos de Graça.',
-    guide: 'Na base do broto brilhante da Térvore no pátio antes da sala do chefe Godrick, ao lado da sala onde Nepheli Loux se encontra.',
-    mapCoords: 'Pátio interno do Castelo Tempesvéu.'
-  },
-
-  /* --------------------------------------------------------------------------
-     6. CONJUNTOS DE ARMADURA & ELMOS
-     -------------------------------------------------------------------------- */
-  {
-    id: 'ar_bull_goat_set',
-    name: 'Conjunto do Bode-Touro (Bull-Goat Set)',
-    nameEn: 'Bull-Goat Set',
-    category: 'armor',
-    subtype: 'Conjuntos Pesados',
-    region: 'altus',
-    location: 'Ruínas do Vale das Tumbas (Mansão Vulcânica)',
-    rarity: 'legendary',
-    icon: '🛡️',
-    secretType: 'Quest NPC',
-    requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'A armadura mais pesada e com maior defesa física e equilíbrio (100 de Poise) de todas as Terras Intermédias.',
-    guide: 'Durante as missões de assassinato da Mansão Vulcânica, Patches dará a você uma carta de alvo contra Tragoth, o Grande Chifre. Invada o mundo dele na arena do Dragão de Magma Makarr no Desfiladeiro de Ruína e derrote-o.',
-    mapCoords: 'Arena do Dragão de Magma, Desfiladeiro de Ruína.'
-  },
-  {
-    id: 'ar_black_knife_set',
-    name: 'Conjunto da Faca Negra (Black Knife Set)',
-    nameEn: 'Black Knife Set',
-    category: 'armor',
-    subtype: 'Mantos Especiais',
-    region: 'mountaintops',
-    location: 'Ordina, Cidade Litúrgica (Neve Consagrada)',
-    rarity: 'rare',
-    icon: '🗡️',
-    secretType: 'Baú Escondido',
-    requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'Armadura usada pelas Assassinas da Faca Negra na Noite das Facas Negras. O manto silencia completamente todos os passos e ruídos do jogador.',
-    guide: 'Em um cadáver sob o arco da ponte congelada nos fundos da cidade fantasma de Ordina, no Campo de Neve Consagrado.',
-    mapCoords: 'Abaixo da ponte de Ordina, Campo de Neve Consagrado.'
-  },
-
-  /* --------------------------------------------------------------------------
-     7. CHEFES LENDÁRIOS & LEMBRANÇAS
-     -------------------------------------------------------------------------- */
+  /* --- CHEFES & LEMBRANÇAS --- */
   {
     id: 'b_malenia_blade_of_miquella',
-    name: 'Malenia, Espada de Miquella',
+    name: 'Malenia, Espada de Miquella (Malenia Boss)',
     nameEn: 'Malenia, Blade of Miquella',
     category: 'bosses',
     subtype: 'Portadores de Runa',
@@ -458,13 +361,29 @@ export const ITEMS_DATA = [
     icon: '🌸',
     secretType: 'Chefe de Masmorra',
     requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'A semideusa jamais derrotada em combate, deusa da Podridão Escarlate que brande a lendária Lâmina de Miquella.',
-    guide: 'Navegue por toda a Árvore Sacra de Miquella e pela cidade fortaleza de Elphael até o Ponto de Graça \'Raízes da Árvore Sacra\'.',
+    lore: 'A semideusa jamais derrotada em combate, portadora da Podridão Escarlate.',
+    guide: 'Navegue por toda a Árvore Sacra de Miquella e Elphael até as Raízes da Árvore.',
     mapCoords: 'Câmara mais profunda de Elphael, Árvore Sacra.'
   },
   {
+    id: 'b_starscourge_radahn',
+    name: 'General Radahn, Flagelo Estelar (Radahn Boss)',
+    nameEn: 'Starscourge Radahn',
+    category: 'bosses',
+    subtype: 'Portadores de Runa',
+    region: 'caelid',
+    location: 'Castelo da Juba Vermelha (Caelid)',
+    rarity: 'legendary',
+    icon: '☄️',
+    secretType: 'Festival de Combate',
+    requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
+    lore: 'O semideus mais poderoso das Terras Intermédias que subjugou as estrelas com gravidade.',
+    guide: 'Inicie o Festival de Radahn no Castelo da Juba Vermelha em Caelid.',
+    mapCoords: 'Dunas do litoral sul de Caelid.'
+  },
+  {
     id: 'b_bayle_the_dread',
-    name: 'Bayle, o Pavoroso (DLC)',
+    name: 'Bayle, o Pavoroso (Bayle the Dread DLC)',
     nameEn: 'Bayle the Dread',
     category: 'bosses',
     subtype: 'Dragões Antigos',
@@ -474,8 +393,8 @@ export const ITEMS_DATA = [
     icon: '🐲',
     secretType: 'Chefe de Masmorra',
     requirements: { str: 0, dex: 0, int: 0, fai: 0, arc: 0 },
-    lore: 'O dragão tirânico ancestral que mutilou o Senhor dos Dragões Placidusax em tempos imemoriais.',
-    guide: 'Escale todo o Pico Irregular no Reino das Sombras, enfrentando tempestades de magma e ventanias até o cume supremo com a ajuda de Igon.',
+    lore: 'O dragão tirânico ancestral que mutilou o Senhor dos Dragões Placidusax.',
+    guide: 'Escale todo o Pico Irregular enfrentando tempestades até o cume supremo com Igon.',
     mapCoords: 'Cume do Pico Irregular, sudeste do Reino das Sombras.'
   }
 ];
