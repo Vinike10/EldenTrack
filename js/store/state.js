@@ -37,8 +37,15 @@ class StateStore {
     this.statsModalOpen = false;
     this.helpModalOpen = false;
 
-    // Cache interno de itens filtrados e seções
-    this.currentItems = [];
+    // Inicialização síncrona inicial para evitar tela vazia
+    this.currentItems = DataService.filterItems({
+      category: this.activeCategory,
+      region: this.activeRegion,
+      search: this.searchQuery,
+      status: this.statusFilter,
+      acquiredIds: this.acquiredIds,
+      wishlistIds: this.wishlistIds
+    });
     this.currentSections = [];
     this._refreshData();
   }

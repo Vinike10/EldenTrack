@@ -18,8 +18,37 @@
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="./css/main.css" />
+
+  <!-- Diagnostics & Error Catcher Script -->
+  <script>
+    window.__eldentrack_logs = [];
+    function logMessage(type, msg) {
+      console[type](msg);
+      window.__eldentrack_logs.push({ type, msg, time: new Date().toLocaleTimeString() });
+      var logPanel = document.getElementById('debug-log-content');
+      if (logPanel) {
+        var line = document.createElement('div');
+        line.style.color = type === 'error' ? '#ef4444' : type === 'warn' ? '#f59e0b' : '#4ade80';
+        line.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+        logPanel.appendChild(line);
+      }
+    }
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+      var errText = 'Erro detectado: ' + msg + ' (Linha ' + lineNo + ')';
+      logMessage('error', errText);
+      var banner = document.getElementById('error-banner');
+      if (banner) {
+        banner.style.display = 'block';
+        banner.innerHTML = '<strong>⚠️ Erro na Execução:</strong> ' + msg + '<br><small>Arquivo: ' + url + ':' + lineNo + '</small>';
+      }
+      return false;
+    };
+  </script>
 </head>
 <body>
+
+  <!-- Error / Diagnostics Banner (Exibido apenas em caso de erro de execução) -->
+  <div id="error-banner" style="display: none; background: #ef4444; color: #fff; padding: 12px 20px; font-size: 0.9rem; font-family: monospace; z-index: 9999; border-bottom: 2px solid #fff;"></div>
 
   <!-- Header Root -->
   <div id="header-root"></div>
@@ -72,7 +101,7 @@
     <p>EldenTrack &copy; 2026 &bull; Desenvolvido para nobres Maculados &bull; Elden Ring &trade; &copy; Bandai Namco / FromSoftware</p>
   </footer>
 
-  <!-- Application Bootstrap -->
-  <script type="module" src="./js/app.js"></script>
+  <!-- Universal Script Bundle (Executa instantaneamente em file:/// e HTTP sem restrições de CORS) -->
+  <script src="./js/eldentrack-bundle.js"></script>
 </body>
 </html>
