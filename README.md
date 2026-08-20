@@ -1,26 +1,34 @@
-# EldenTrack — Rastreador de Itens, Segredos & Graça (Elden Ring)
+# EldenTrack — Compêndio de Armas, Segredos & Graça (Elden Ring)
 
 <div align="center">
   <h3>✨ Desvende todos os segredos das Terras Intermédias e do Reino das Sombras ✨</h3>
-  <p>Aplicação moderna com <strong>Motion Principles</strong>, <strong>Skeleton Lazy Loading</strong>, banco de dados enriquecido com guias passo a passo de localização e gestão de progresso para o público brasileiro.</p>
+  <p>Compêndio definitivo de <strong>Elden Ring</strong> e expansão <strong>Shadow of the Erdtree</strong> com guias passo a passo de rota, atributos de combate, avisos de missables, 3 temas visuais e 4 modos de visualização progressiva.</p>
 </div>
 
 ---
 
-## 🌟 Funcionalidades
+## 🌟 Principais Funcionalidades
 
-- **⚔️ Catálogo Abrangente**: Armas Lendárias, Talismãs, Feitiçarias Primevas, Encantamentos, Cinzas da Guerra, Lágrimas Larvais, Fragmentos de Scadutree e Chefes/Lembranças.
-- **✨ Design System Golden Grace & Obsidian Velvet**: Estética Souls-like com paleta dourada da Graça (`#d4af37`), fundos de obsidiana e tipografia *Cinzel* e *Outfit*.
-- **⚡ Skeleton Lazy Loading**: Placeholders animados com reflexo metálico dourado (*golden shimmer*) em todos os elementos da interface.
-- **🧭 Guias Passo a Passo**: Detalhamento de como obter cada segredo, requisitos mínimos de atributos (FOR, DES, INT, FÉ, ARC) e coordenadas de mapa.
-- **💾 Gestão de Saves & Múltiplos Perfis**: Persistência via `localStorage`, exportação e importação de saves em formato `.json`.
-- **📑 Modo de Seções Dedicadas & Busca Bilíngue**: Visualização por seções separadas de categorias e busca com aliases em Português e Inglês.
+- **🧭 Guias de Obtenção Ultra Detalhados**: Rota passo a passo a partir do Ponto de Graça mais próximo, pontos de referência e dicas de travessia.
+- **⚠️ Alertas de Quest & Missables**: Informações cruciais sobre gatilhos de história para evitar perder armas e itens lendários.
+- **⚔️ Estatísticas de Combate & Requisitos**: Atributos mínimos (FOR, DES, INT, FÉ, ARC), escalonamento, tipo de dano, habilidade/cinza exclusiva e custo de FP.
+- **🎨 Sistema Multi-Tema Dinâmico**:
+  - 🌟 **Graça da Térvore (Erdtree Gold)**: Ardósia negra e ouro nobre.
+  - 🌙 **Luar de Caria (Moonlight Sorcery)**: Tons de azul meia-noite, prata e cristal astral.
+  - 🔥 **Chama das Sombras (Messmer Flame)**: Carvão vulcânico e brasa carmesim da DLC.
+- **📑 4 Modos de Visualização Sem Sobrecarga (Progressive Disclosure)**:
+  - 🗺️ **Modo Rota de Campanha**: Organizado na ordem natural de progressão por região (Limgrave até o Reino das Sombras).
+  - 🔲 **Modo Cards Minimalistas**: Foco nos detalhes essenciais para leitura rápida.
+  - 📑 **Modo Compêndio por Categorias**: Seções colapsáveis com porcentagem individual.
+  - 📋 **Modo Checklist Rápido**: Linhas compactas para marcação instantânea durante a jogatina.
+- **📖 Compendium Side Drawer**: Painel lateral deslizante com abas dedicadas (`🧭 Rota`, `⚔️ Combate`, `📜 Lore`, `⚠️ Alertas`).
+- **💾 Gestão de Saves & Múltiplos Perfis**: Backup seguro via `localStorage`, exportação e importação em formato `.json`.
 
 ---
 
 ## 🚀 Como Executar
 
-Por ser construído sobre os padrões nativos da web (HTML5, Modern Vanilla CSS e ES6 Modules), basta abrir o arquivo `index.html` em qualquer navegador moderno ou via **Live Server**.
+Por ser construído sobre padrões nativos da web (HTML5, Modern Vanilla CSS e ES6 JavaScript), basta abrir o arquivo `index.html` em qualquer navegador moderno ou via **Live Server**.
 
 ```bash
 # Clone o repositório

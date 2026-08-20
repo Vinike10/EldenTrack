@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ELDENTRACK - CATEGORIES & TAXONOMY
+   ELDENTRACK - CATEGORIES TAXONOMY
    ========================================================================== */
 
 export const CATEGORIES = [
@@ -7,71 +7,71 @@ export const CATEGORIES = [
     id: 'all',
     name: 'Todos os Segredos',
     icon: '✨',
-    description: 'Catálogo unificado de todos os itens, magias e segredos.',
+    description: 'Catálogo unificado de armas, talismãs, magias, itens chave e chefes.',
     color: 'var(--gold-primary)'
   },
   {
     id: 'weapons',
-    name: 'Armas & Selos',
+    name: 'Armas & Escudos',
     icon: '⚔️',
-    description: 'Espadas colossais, katanas, cajados brilhantes e selos sagrados.',
+    description: 'Espadas colossais, katanas, rapieiras, lanças, cajados e escudos lendários.',
     color: '#e63946',
-    subcategories: ['Espadas Colossais', 'Katanas', 'Cajados Glintstone', 'Selos Sagrados', 'Adagas', 'Escudos Grandes']
+    subcategories: ['Armas Lendárias', 'Katanas', 'Rapieiras & Estocadas', 'Espadas Colossais', 'Lanças & Hastes', 'Cajados & Selos', 'Escudos Grandes']
   },
   {
     id: 'talismans',
     name: 'Talismãs Lendários',
     icon: '💍',
-    description: 'Acessórios lendários que alteram atributos e concedem poderes únicos.',
+    description: 'Acessórios lendários que amplificam atributos, reduzem consumo e concedem poderes únicos.',
     color: '#ff9d00',
-    subcategories: ['Lendários', 'Aumento de Dano', 'Defensivos', 'Cura & FP', 'Atributos']
+    subcategories: ['Talismãs Lendários', 'Aumento de Dano', 'Defensivos & Poise', 'Cura & FP', 'Atributos & Vigor']
   },
   {
     id: 'spells',
     name: 'Magias & Encantamentos',
     icon: '🔮',
-    description: 'Feitiçarias primordiais dos eruditos de Raya Lucaria e incantações divinas.',
+    description: 'Feitiçarias primevas de Raya Lucaria, encantamentos de dragão e linhagem divina.',
     color: '#38bdf8',
-    subcategories: ['Feitiçarias Primevas', 'Encantamentos dos Dragões', 'Chama Frenética', 'Gravidade', 'Linhagem Divina']
+    subcategories: ['Feitiçarias Primevas', 'Encantamentos dos Dragões', 'Chama Frenética', 'Linhagem da Térvore', 'Gravidade']
   },
   {
     id: 'ashes',
     name: 'Cinzas da Guerra',
     icon: '🗡️',
-    description: 'Habilidades lendárias e afinidades de combate para armas.',
+    description: 'Habilidades de combate lendárias e afinidades elementais para armas.',
     color: '#bd6eff',
-    subcategories: ['Afinidade Pesada', 'Afinidade Afiada', 'Afinidade Sangue', 'Afinidade Mágica', 'Afinidade Fogo']
+    subcategories: ['Afinidade Pesada/Afiada', 'Afinidade Sangue/Veneno', 'Afinidade Mágica/Gelo', 'Afinidade Sagrada/Fogo']
   },
   {
     id: 'key_items',
     name: 'Itens Chave & Lágrimas',
     icon: '🗝️',
-    description: 'Lágrimas larvais para renascimento, pedras de memória e chaves de pedra.',
-    color: '#48a9fe',
-    subcategories: ['Lágrimas Larvais', 'Pedras de Memória', 'Fragmentos de Scadutree', 'Chaves de Espada de Pedra', 'Sementes Douradas']
+    description: 'Lágrimas larvais (respec), lágrimas sagradas, sementes douradas e fragmentos de Scadutree.',
+    color: '#34d399',
+    subcategories: ['Lágrimas Larvais (Respec)', 'Lágrimas Sagradas', 'Sementes Douradas', 'Fragmentos da Scadutree', 'Cinzas de Espírito Reverenciadas', 'Chaves de Espada']
   },
   {
     id: 'armor',
-    name: 'Armaduras & Elmos',
+    name: 'Armaduras Notáveis',
     icon: '🛡️',
-    description: 'Conjuntos de campeões, armaduras lendárias e elmos com bônus ocultos.',
+    description: 'Conjuntos pesados lendários, mantos arcanos e elmos com efeitos passivos.',
     color: '#a2adb9',
-    subcategories: ['Conjuntos Pesados', 'Mantos de Feiticeiro', 'Elmos Especiais', 'Conjuntos de Chefes']
+    subcategories: ['Conjuntos Pesados', 'Mantos Arcanos', 'Elmos Especiais']
   },
   {
     id: 'cookbooks',
-    name: 'Livros & Pedras Draconianas',
+    name: 'Manuais & Pedras de Forja',
     icon: '📜',
-    description: 'Manuais de artesanato e pedras antigas de forja máxima (+25 / +10).',
+    description: 'Manuais de criação de consumíveis e pedras dragão ancião (+25 / +10).',
     color: '#10b981',
-    subcategories: ['Pedras Draconianas', 'Manuais de Guerreiro', 'Manuais de Artesão', 'Manuais do DLC']
+    subcategories: ['Pedras Draconianas (+25/+10)', 'Manuais de Artesão', 'Manuais de Guerreiro']
   },
   {
     id: 'bosses',
     name: 'Chefes & Lembranças',
     icon: '👑',
-    description: 'Semideuses, portadores de Grandes Runas e ameaças lendárias.',
+    description: 'Portadores de Grande Runa, Semideuses e ameaças supremas das Terras Intermédias.',
     color: '#f59e0b',
-    subcategories: ['Portadores de Runa', 'Lembranças', 'Dragões Antigos', 'Chefes do Reino das Sombras']
+    subcategories: ['Portadores de Runa', 'Lembranças', 'Chefes de Masmorra', 'Chefes da DLC']
   }
 ];

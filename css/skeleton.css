@@ -7,9 +7,9 @@
 .skeleton {
   background: linear-gradient(
     90deg,
-    rgba(24, 28, 37, 0.8) 0%,
-    rgba(212, 175, 55, 0.12) 50%,
-    rgba(24, 28, 37, 0.8) 100%
+    var(--bg-surface) 0%,
+    var(--gold-glow) 50%,
+    var(--bg-surface) 100%
   );
   background-size: 200% 100%;
   animation: skeletonWave 1.6s infinite ease-in-out;
@@ -55,13 +55,13 @@
 /* Skeleton Card Structure */
 .skeleton-card {
   background: var(--bg-surface);
-  border: 1px solid rgba(212, 175, 55, 0.08);
+  border: 1px solid var(--glass-border-subtle);
   border-radius: var(--radius-lg);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  height: 210px;
+  height: 160px;
   position: relative;
 }
 
@@ -115,8 +115,8 @@
 
 .skeleton-view {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
   width: 100%;
   transition: opacity var(--dur-normal) var(--ease-smooth);
 }

@@ -1,92 +1,173 @@
 /* ==========================================================================
-   ELDENTRACK - DESIGN TOKENS
-   Theme: Golden Grace & Obsidian Velvet (Elden Ring Aesthetic)
+   ELDENTRACK - DESIGN TOKENS & DYNAMIC THEMES
+   Themes: 
+   1. Erdtree Gold (Default: Deep Slate Obsidian & Warm Noble Gold)
+   2. Moonlight Sorcery (Carian Midnight Blue, Silver & Astral Cyan)
+   3. Messmer Flame (Volcanic Charcoal, Crimson & DLC Dark Gold)
    ========================================================================== */
 
 :root {
-  /* --- Golden Order & Grace Accents --- */
-  --gold-primary: #d4af37;
-  --gold-light: #f6e27a;
-  --gold-bright: #ffe885;
-  --gold-deep: #a88220;
-  --gold-dark: #634d12;
-  --gold-muted: #8b794e;
-  --gold-glow: rgba(212, 175, 55, 0.35);
-  --gold-glow-intense: rgba(246, 226, 122, 0.6);
+  /* --- Default Theme: Erdtree Gold & Obsidian Slate --- */
+  --theme-name: 'erdtree';
 
-  /* --- Obsidian & Dark Fantasy Backgrounds --- */
-  --bg-abyss: #07080a;
-  --bg-obsidian: #0c0e12;
-  --bg-surface: #12151c;
-  --bg-surface-raised: #181c25;
-  --bg-surface-hover: #1e2430;
-  --bg-surface-active: #252c3b;
+  /* Fundo e Superfícies */
+  --bg-abyss: #080a0f;
+  --bg-obsidian: #0e121a;
+  --bg-surface: #141924;
+  --bg-surface-raised: #1a2130;
+  --bg-surface-hover: #222b3e;
+  --bg-surface-active: #2b364e;
+  --bg-surface-dense: rgba(14, 18, 26, 0.95);
 
-  /* --- Glassmorphism & Overlays --- */
-  --glass-bg: rgba(18, 21, 28, 0.75);
-  --glass-bg-dense: rgba(12, 14, 18, 0.9);
-  --glass-border: rgba(212, 175, 55, 0.18);
-  --glass-border-focus: rgba(246, 226, 122, 0.45);
-  --glass-blur: blur(14px);
+  /* Ouro Nobre & Destaques de Graça */
+  --gold-primary: #dfc076;
+  --gold-light: #f5de9e;
+  --gold-bright: #fff0be;
+  --gold-deep: #b38e3a;
+  --gold-dark: #6e541b;
+  --gold-muted: #947e4b;
+  --gold-glow: rgba(223, 192, 118, 0.22);
+  --gold-glow-intense: rgba(245, 222, 158, 0.45);
 
-  /* --- Text & Contrast --- */
-  --text-primary: #f0ede6;
-  --text-secondary: #beb6a5;
-  --text-muted: #847d6e;
-  --text-gold: #e5c158;
-  --text-inverse: #0c0e12;
+  /* Acentos Temáticos */
+  --accent-magic: #38bdf8;
+  --accent-magic-glow: rgba(56, 189, 248, 0.25);
+  --accent-grace: #34d399;
+  --accent-grace-bg: rgba(52, 211, 153, 0.12);
+  --accent-fire: #f97316;
+  --accent-crimson: #f43f5e;
+  --accent-lightning: #facc15;
+  --accent-rot: #ec4899;
 
-  /* --- Rarity System --- */
-  --rarity-legendary: #ff9d00;
-  --rarity-legendary-glow: rgba(255, 157, 0, 0.4);
-  --rarity-rare: #bd6eff;
-  --rarity-rare-glow: rgba(189, 110, 255, 0.35);
-  --rarity-uncommon: #48a9fe;
-  --rarity-uncommon-glow: rgba(72, 169, 254, 0.3);
-  --rarity-common: #a2adb9;
-  --rarity-dlc: #e63946;
-  --rarity-dlc-glow: rgba(230, 57, 70, 0.4);
+  /* Glassmorphism & Bordas */
+  --glass-bg: rgba(18, 23, 34, 0.78);
+  --glass-bg-dense: rgba(14, 18, 26, 0.92);
+  --glass-border: rgba(223, 192, 118, 0.15);
+  --glass-border-subtle: rgba(255, 255, 255, 0.07);
+  --glass-border-focus: rgba(245, 222, 158, 0.4);
+  --glass-blur: blur(16px);
 
-  /* --- Status & Feedback --- */
-  --status-acquired: #4ade80;
-  --status-acquired-bg: rgba(74, 222, 128, 0.12);
-  --status-missing: #ef4444;
-  --status-missing-bg: rgba(239, 68, 68, 0.12);
+  /* Texto & Contraste */
+  --text-primary: #f2f0eb;
+  --text-secondary: #c0b9a8;
+  --text-muted: #7d786d;
+  --text-gold: #dfc076;
+  --text-inverse: #080a0f;
+
+  /* Sistema de Raridade */
+  --rarity-legendary: #f59e0b;
+  --rarity-legendary-glow: rgba(245, 158, 11, 0.35);
+  --rarity-rare: #a855f7;
+  --rarity-rare-glow: rgba(168, 85, 247, 0.3);
+  --rarity-uncommon: #38bdf8;
+  --rarity-uncommon-glow: rgba(56, 189, 248, 0.25);
+  --rarity-common: #94a3b8;
+  --rarity-dlc: #f43f5e;
+  --rarity-dlc-glow: rgba(244, 63, 94, 0.35);
+
+  /* Status de Progresso */
+  --status-acquired: #34d399;
+  --status-acquired-bg: rgba(52, 211, 153, 0.12);
+  --status-acquired-border: rgba(52, 211, 153, 0.4);
+  --status-missing: #f43f5e;
+  --status-missing-bg: rgba(244, 63, 94, 0.1);
   --status-wishlist: #38bdf8;
   --status-wishlist-bg: rgba(56, 189, 248, 0.12);
+  --status-missable: #fbbf24;
+  --status-missable-bg: rgba(251, 191, 36, 0.12);
 
-  /* --- Typography --- */
-  --font-serif: 'Cinzel', 'Cinzel Decorative', 'Trajan Pro', Georgia, serif;
+  /* Tipografia */
+  --font-serif: 'Cinzel', Georgia, 'Times New Roman', serif;
   --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
 
-  /* --- Transitions & Motion Easing --- */
+  /* Transições e Curvas */
   --ease-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
-  --ease-in: cubic-bezier(0.4, 0, 1, 1);
   
-  --dur-fast: 150ms;
-  --dur-normal: 280ms;
-  --dur-slow: 450ms;
-  --dur-grace: 700ms;
+  --dur-fast: 140ms;
+  --dur-normal: 260ms;
+  --dur-slow: 420ms;
 
-  /* --- Elevation & Shadows --- */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.6);
-  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.8);
-  --shadow-gold: 0 0 24px rgba(212, 175, 55, 0.22);
-  --shadow-gold-lg: 0 0 40px rgba(212, 175, 55, 0.35);
+  /* Sombras & Profundidade */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.75);
+  --shadow-gold: 0 0 24px rgba(223, 192, 118, 0.18);
+  --shadow-gold-lg: 0 0 44px rgba(223, 192, 118, 0.3);
 
-  /* --- Borders & Radii --- */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
+  /* Raios de Borda */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
   --radius-full: 9999px;
 
-  /* --- Layout & Spacing --- */
-  --header-height: 72px;
-  --sidebar-width: 290px;
-  --max-content-width: 1540px;
+  /* Layout */
+  --header-height: 70px;
+  --drawer-width: 540px;
+  --max-content-width: 1480px;
+}
+
+/* ==========================================================================
+   THEME 2: MOONLIGHT SORCERY (Ranni / Raya Lucaria)
+   ========================================================================== */
+[data-theme="moonlight"] {
+  --theme-name: 'moonlight';
+  --bg-abyss: #060912;
+  --bg-obsidian: #0b101e;
+  --bg-surface: #10182c;
+  --bg-surface-raised: #17223c;
+  --bg-surface-hover: #1f2d4e;
+  --bg-surface-active: #283a63;
+  --bg-surface-dense: rgba(11, 16, 30, 0.96);
+
+  --gold-primary: #7dd3fc;
+  --gold-light: #bae6fd;
+  --gold-bright: #e0f2fe;
+  --gold-deep: #0284c7;
+  --gold-dark: #0369a1;
+  --gold-muted: #38bdf8;
+  --gold-glow: rgba(125, 211, 252, 0.25);
+  --gold-glow-intense: rgba(186, 230, 253, 0.5);
+
+  --glass-bg: rgba(16, 24, 44, 0.82);
+  --glass-border: rgba(125, 211, 252, 0.2);
+  --glass-border-focus: rgba(186, 230, 253, 0.45);
+
+  --text-gold: #7dd3fc;
+  --shadow-gold: 0 0 24px rgba(125, 211, 252, 0.2);
+  --shadow-gold-lg: 0 0 44px rgba(125, 211, 252, 0.35);
+}
+
+/* ==========================================================================
+   THEME 3: MESSMER FLAME (Shadow of the Erdtree)
+   ========================================================================== */
+[data-theme="shadow"] {
+  --theme-name: 'shadow';
+  --bg-abyss: #0c0708;
+  --bg-obsidian: #140d0f;
+  --bg-surface: #1d1316;
+  --bg-surface-raised: #28191e;
+  --bg-surface-hover: #352128;
+  --bg-surface-active: #442a33;
+  --bg-surface-dense: rgba(20, 13, 15, 0.96);
+
+  --gold-primary: #fb7185;
+  --gold-light: #fda4af;
+  --gold-bright: #ffe4e6;
+  --gold-deep: #e11d48;
+  --gold-dark: #9f1239;
+  --gold-muted: #f43f5e;
+  --gold-glow: rgba(251, 113, 133, 0.25);
+  --gold-glow-intense: rgba(253, 164, 175, 0.5);
+
+  --glass-bg: rgba(29, 19, 22, 0.82);
+  --glass-border: rgba(251, 113, 133, 0.2);
+  --glass-border-focus: rgba(253, 164, 175, 0.45);
+
+  --text-gold: #fb7185;
+  --shadow-gold: 0 0 24px rgba(251, 113, 133, 0.2);
+  --shadow-gold-lg: 0 0 44px rgba(251, 113, 133, 0.35);
 }

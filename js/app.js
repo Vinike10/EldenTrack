@@ -1,5 +1,6 @@
 /* ==========================================================================
-   ELDENTRACK - MAIN APPLICATION BOOTSTRAP (Phase 2 with SectionView)
+   ELDENTRACK - MAIN APPLICATION BOOTSTRAP (v4.1)
+   Multi-Theme, 4 View Modes, Minimalist Cards & Compendium Side Drawer
    ========================================================================== */
 
 import { Store } from './store/state.js';
@@ -14,9 +15,8 @@ import { SkeletonLoader } from './components/skeleton-loader.js';
 class Application {
   constructor() {
     this.headerRoot = document.getElementById('header-root');
-    this.bannerStatsRoot = document.getElementById('banner-stats-root');
+    this.heroBarRoot = document.getElementById('hero-bar-root');
     this.filterBarRoot = document.getElementById('filter-bar-root');
-    this.itemsGrid = document.getElementById('items-grid');
     this.skeletonGridView = document.getElementById('skeleton-grid-view');
     this.itemsGridView = document.getElementById('items-grid-view');
     this.modalRoot = document.getElementById('modal-root');
@@ -27,9 +27,11 @@ class Application {
 
   init() {
     // 1. Renderizar Skeletons no início
-    this.skeletonGridView.innerHTML = SkeletonLoader.renderCardSkeletons(8);
+    if (this.skeletonGridView) {
+      this.skeletonGridView.innerHTML = SkeletonLoader.renderCardSkeletons(8);
+    }
     
-    // 2. Anexar Eventos globais de componentes
+    // 2. Anexar Eventos globais
     ItemCard.attachEvents(this.itemsGridView);
     SectionView.attachEvents(this.itemsGridView);
     FilterBar.attachEvents(this.filterBarRoot);
@@ -41,15 +43,16 @@ class Application {
       this.render(state, eventName);
     });
 
-    // 4. Renderização inicial com leve delay para demonstrar o skeleton loading
+    // 4. Renderização inicial com leve transição de montagem
     this.showSkeletons(true);
     setTimeout(() => {
       this.render(Store.getState(), 'initial_mount');
       this.showSkeletons(false);
-    }, 300);
+    }, 200);
   }
 
   showSkeletons(show) {
+    if (!this.skeletonGridView || !this.itemsGridView) return;
     if (show) {
       this.skeletonGridView.classList.remove('hidden');
       this.itemsGridView.classList.remove('active');
@@ -60,30 +63,55 @@ class Application {
   }
 
   render(state, eventName) {
-    // Header
-    this.headerRoot.innerHTML = Header.render(state);
-    Header.attachEvents(this.headerRoot);
+    // 1. Header & Theme Setup (Atualização estável que preserva o foco do input de busca)
+    Header.update(this.headerRoot, state, eventName);
 
-    // Banner Stats Summary
-    this.bannerStatsRoot.innerHTML = `
-      <div class="stat-pill-box">
-        <div class="stat-pill-val" style="color: var(--status-acquired);">${state.stats.acquired}</div>
-        <div class="stat-pill-lbl">Obtidos</div>
-      </div>
-      <div class="stat-pill-box">
-        <div class="stat-pill-val" style="color: var(--status-missing);">${state.stats.missing}</div>
-        <div class="stat-pill-lbl">Faltantes</div>
-      </div>
-      <div class="stat-pill-box">
-        <div class="stat-pill-val">${state.stats.percentage}%</div>
-        <div class="stat-pill-lbl">Progresso</div>
-      </div>
-    `;
+    // 2. Slim Contextual Hero Bar
+    const viewTitle = state.viewMode === 'route' ? '🗺️ Rota de Campanha' :
+                      state.viewMode === 'categories' ? '📑 Compêndio por Categorias' :
+                      state.viewMode === 'checklist' ? '📋 Checklist Rápido de Jogo' :
+                      '🔲 Catálogo de Segredos';
 
-    // Filter Bar
-    this.filterBarRoot.innerHTML = FilterBar.render(state);
+    const viewDesc = state.viewMode === 'route' ? 'Progressão natural das Terras Intermédias ao Reino das Sombras.' :
+                     state.viewMode === 'categories' ? 'Armas, talismãs, magias, itens chave e chefes separados por taxonomia.' :
+                     state.viewMode === 'checklist' ? 'Lista compacta para marcar itens rapidamente durante sua jogatina.' :
+                     'Explore os segredos mais poderosos das Terras Intermédias.';
 
-    // Skeleton vs Loaded Items
+    if (this.heroBarRoot) {
+      this.heroBarRoot.innerHTML = `
+        <div class="slim-hero-bar">
+          <div class="hero-left-info">
+            <div class="hero-badge-icon">✨</div>
+            <div>
+              <h2 class="hero-title">${viewTitle}</h2>
+              <div class="hero-subtitle">${viewDesc}</div>
+            </div>
+          </div>
+
+          <div class="hero-stats-strip">
+            <div class="hero-stat-chip">
+              <span style="color: var(--status-acquired);">✓</span>
+              <span>Obtidos: <strong>${state.stats.acquired}</strong></span>
+            </div>
+            <div class="hero-stat-chip">
+              <span style="color: var(--status-missing);">○</span>
+              <span>Faltantes: <strong>${state.stats.missing}</strong></span>
+            </div>
+            <div class="hero-stat-chip">
+              <span style="color: var(--gold-primary);">★</span>
+              <span>Favoritos: <strong>${state.wishlistIds.length}</strong></span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // 3. Filter Bar
+    if (this.filterBarRoot) {
+      this.filterBarRoot.innerHTML = FilterBar.render(state);
+    }
+
+    // 4. Skeleton vs Loaded Items
     if (state.isLoading) {
       this.showSkeletons(true);
       return;
@@ -91,17 +119,24 @@ class Application {
 
     this.showSkeletons(false);
 
-    // Render de Conteúdo de acordo com viewMode
-    if (state.viewMode === 'sections') {
-      this.itemsGridView.innerHTML = SectionView.render(state.sections, state.acquiredIds, state.wishlistIds);
+    // 5. Renderização do Conteúdo de acordo com viewMode
+    if (state.viewMode === 'route') {
+      // Modo Rota de Campanha por Região
+      this.itemsGridView.innerHTML = SectionView.renderRoadmap(state.roadmap, state.acquiredIds, state.wishlistIds);
+    } else if (state.viewMode === 'categories') {
+      // Modo Seções por Categoria
+      this.itemsGridView.innerHTML = SectionView.renderCategories(state.sections, state.acquiredIds, state.wishlistIds);
+    } else if (state.viewMode === 'checklist') {
+      // Modo Checklist Compacto
+      this.itemsGridView.innerHTML = SectionView.renderChecklist(state.items, state.acquiredIds, state.wishlistIds);
     } else {
-      // Modo Grid Unificado
+      // Modo Grid Tradicional de Cards
       if (state.items.length === 0) {
         this.itemsGridView.innerHTML = `
           <div class="empty-state" style="grid-column: 1 / -1;">
             <div class="empty-icon">🕯️</div>
             <div class="empty-title">Nenhum Segredo Encontrado</div>
-            <p class="empty-desc">Nenhum item corresponde aos filtros selecionados ou à busca "${state.searchQuery}".</p>
+            <p class="empty-desc">Nenhum item corresponde à busca "${state.searchQuery || ''}".</p>
           </div>
         `;
       } else {
@@ -115,7 +150,7 @@ class Application {
       }
     }
 
-    // Modal de Detalhes
+    // 6. Modal / Side Drawer de Detalhes
     if (state.selectedItem) {
       const isAcquired = state.acquiredIds.includes(state.selectedItem.id);
       const isWishlisted = state.wishlistIds.includes(state.selectedItem.id);
@@ -124,8 +159,10 @@ class Application {
       this.modalRoot.innerHTML = '';
     }
 
-    // Modal de Estatísticas
-    this.statsModalRoot.innerHTML = StatsDashboard.render(state);
+    // 7. Modal de Estatísticas
+    if (this.statsModalRoot) {
+      this.statsModalRoot.innerHTML = StatsDashboard.render(state);
+    }
   }
 }
 

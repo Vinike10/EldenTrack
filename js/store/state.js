@@ -1,5 +1,6 @@
 /* ==========================================================================
-   ELDENTRACK - REACTIVE STATE STORE (Pub/Sub with EldenAPI Integration)
+   ELDENTRACK - REACTIVE STATE STORE (v4.0)
+   Multi-Theme, View Modes (Route, Grid, Categories, Checklist) & Save Sync
    ========================================================================== */
 
 import { StorageManager } from './storage.js';
@@ -18,12 +19,19 @@ class StateStore {
     this.acquiredIds = curChar.acquired || [];
     this.wishlistIds = curChar.wishlist || [];
 
+    // Configurações & Tema
+    this.theme = saved.settings?.theme || 'erdtree';
+    this.viewMode = saved.settings?.viewMode || 'route'; // 'route', 'grid', 'categories', 'checklist'
+
+    // Aplica o tema imediatamente no HTML root
+    document.documentElement.setAttribute('data-theme', this.theme);
+
     // Filtros e UI
-    this.viewMode = 'grid'; // 'grid' ou 'sections'
     this.activeCategory = 'all';
     this.activeRegion = 'all_regions';
     this.searchQuery = '';
     this.statusFilter = 'all'; // 'all', 'acquired', 'missing', 'wishlist'
+    this.activeDrawerTab = 'walkthrough'; // 'walkthrough', 'combat', 'lore', 'warnings'
     this.requirements = {
       maxStr: null,
       maxDex: null,
@@ -35,9 +43,8 @@ class StateStore {
     this.isLoading = false;
     this.selectedItem = null;
     this.statsModalOpen = false;
-    this.helpModalOpen = false;
 
-    // Inicialização síncrona inicial para evitar tela vazia
+    // Inicialização síncrona
     this.currentItems = DataService.filterItems({
       category: this.activeCategory,
       region: this.activeRegion,
@@ -47,6 +54,7 @@ class StateStore {
       wishlistIds: this.wishlistIds
     });
     this.currentSections = [];
+    this.currentRoadmap = [];
     this._refreshData();
   }
 
@@ -70,30 +78,32 @@ class StateStore {
     const stats = DataService.getCounts(this.acquiredIds);
 
     return {
+      theme: this.theme,
       viewMode: this.viewMode,
       activeCategory: this.activeCategory,
       activeRegion: this.activeRegion,
       searchQuery: this.searchQuery,
       statusFilter: this.statusFilter,
+      activeDrawerTab: this.activeDrawerTab,
       requirements: this.requirements,
       sortBy: this.sortBy,
       acquiredIds: this.acquiredIds,
       wishlistIds: this.wishlistIds,
       items: this.currentItems,
       sections: this.currentSections,
+      roadmap: this.currentRoadmap,
       totalItemCount: DataService.getAllItems().length,
       stats,
       activeCharacter: curChar,
       characters: this.saveData.characters,
       isLoading: this.isLoading,
       selectedItem: this.selectedItem,
-      statsModalOpen: this.statsModalOpen,
-      helpModalOpen: this.helpModalOpen
+      statsModalOpen: this.statsModalOpen
     };
   }
 
   async _refreshData() {
-    const { items } = await EldenAPI.fetchItems({
+    const filterParams = {
       category: this.activeCategory,
       region: this.activeRegion,
       query: this.searchQuery,
@@ -102,22 +112,43 @@ class StateStore {
       wishlistIds: this.wishlistIds,
       requirements: this.requirements,
       simulatedLatency: 0
-    });
+    };
 
-    const sections = await EldenAPI.fetchSections({
-      region: this.activeRegion,
-      query: this.searchQuery,
-      status: this.statusFilter,
-      acquiredIds: this.acquiredIds,
-      wishlistIds: this.wishlistIds,
-      requirements: this.requirements
-    });
+    const { items } = await EldenAPI.fetchItems(filterParams);
+    const sections = await EldenAPI.fetchSections(filterParams);
+    const roadmap = await EldenAPI.fetchRoadmap(filterParams);
 
     this.currentItems = items;
     this.currentSections = sections;
+    this.currentRoadmap = roadmap;
   }
 
-  // --- Actions ---
+  // --- Ações do Estado ---
+
+  setTheme(themeName) {
+    if (this.theme === themeName) return;
+    this.theme = themeName;
+    document.documentElement.setAttribute('data-theme', themeName);
+    if (!this.saveData.settings) this.saveData.settings = {};
+    this.saveData.settings.theme = themeName;
+    StorageManager.save(this.saveData);
+    this.notify('theme_changed', { theme: themeName });
+  }
+
+  setViewMode(mode) {
+    if (this.viewMode === mode) return;
+    this.viewMode = mode;
+    if (!this.saveData.settings) this.saveData.settings = {};
+    this.saveData.settings.viewMode = mode;
+    StorageManager.save(this.saveData);
+    this._triggerLoading(120);
+    this.notify('view_mode_changed', { mode });
+  }
+
+  setDrawerTab(tabName) {
+    this.activeDrawerTab = tabName;
+    this.notify('drawer_tab_changed', { tabName });
+  }
 
   async toggleAcquired(itemId) {
     const idx = this.acquiredIds.indexOf(itemId);
@@ -153,17 +184,10 @@ class StateStore {
     this.notify('item_wishlist_toggled', { itemId, isWishlisted });
   }
 
-  setViewMode(mode) {
-    if (this.viewMode === mode) return;
-    this.viewMode = mode;
-    this._triggerLoading();
-    this.notify('view_mode_changed', { mode });
-  }
-
   async setCategory(categoryId) {
     if (this.activeCategory === categoryId) return;
     this.activeCategory = categoryId;
-    this._triggerLoading();
+    this._triggerLoading(120);
     await this._refreshData();
     this.notify('category_changed', { categoryId });
   }
@@ -171,7 +195,7 @@ class StateStore {
   async setRegion(regionId) {
     if (this.activeRegion === regionId) return;
     this.activeRegion = regionId;
-    this._triggerLoading();
+    this._triggerLoading(120);
     await this._refreshData();
     this.notify('region_changed', { regionId });
   }
@@ -185,24 +209,20 @@ class StateStore {
   async setStatusFilter(status) {
     if (this.statusFilter === status) return;
     this.statusFilter = status;
-    this._triggerLoading();
+    this._triggerLoading(120);
     await this._refreshData();
     this.notify('status_filter_changed', { status });
   }
 
   setSelectedItem(item) {
     this.selectedItem = item;
+    if (item) this.activeDrawerTab = 'walkthrough';
     this.notify('selected_item_changed', { item });
   }
 
   toggleStatsModal(open) {
     this.statsModalOpen = typeof open === 'boolean' ? open : !this.statsModalOpen;
     this.notify('stats_modal_toggled', { open: this.statsModalOpen });
-  }
-
-  toggleHelpModal(open) {
-    this.helpModalOpen = typeof open === 'boolean' ? open : !this.helpModalOpen;
-    this.notify('help_modal_toggled', { open: this.helpModalOpen });
   }
 
   async switchCharacter(charId) {
@@ -213,7 +233,7 @@ class StateStore {
     this.wishlistIds = char.wishlist || [];
     this.saveData.activeCharacterId = charId;
     StorageManager.save(this.saveData);
-    this._triggerLoading();
+    this._triggerLoading(150);
     await this._refreshData();
     this.notify('character_switched', { character: char });
   }
@@ -230,7 +250,7 @@ class StateStore {
       const curChar = data.characters.find(c => c.id === this.activeCharacterId) || data.characters[0];
       this.acquiredIds = curChar.acquired || [];
       this.wishlistIds = curChar.wishlist || [];
-      this._triggerLoading();
+      this._triggerLoading(150);
       await this._refreshData();
       this.notify('save_imported', { character: curChar });
       return true;
@@ -245,7 +265,7 @@ class StateStore {
     this.activeCharacterId = this.saveData.activeCharacterId;
     this.acquiredIds = [];
     this.wishlistIds = [];
-    this._triggerLoading();
+    this._triggerLoading(150);
     await this._refreshData();
     this.notify('progress_reset', {});
   }
@@ -260,7 +280,7 @@ class StateStore {
     StorageManager.save(this.saveData);
   }
 
-  _triggerLoading(duration = 200) {
+  _triggerLoading(duration = 150) {
     this.isLoading = true;
     this.notify('loading_started', {});
     setTimeout(() => {

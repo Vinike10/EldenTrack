@@ -1,5 +1,6 @@
 /* ==========================================================================
-   ELDENTRACK - FILTER BAR COMPONENT (with View Mode Toggle & Clear)
+   ELDENTRACK - FILTER BAR COMPONENT (v4.0)
+   Compact Faceted Filters: Category Chips, Region Dropdown & Status Pills
    ========================================================================== */
 
 import { Store } from '../store/state.js';
@@ -11,7 +12,7 @@ export const FilterBar = {
     const regions = DataService.getRegions();
     const stats = state.stats;
 
-    // Categorias Scroll
+    // Chips de Categoria
     const categoryChips = categories.map(cat => {
       const isActive = state.activeCategory === cat.id;
       const count = stats.byCategory[cat.id]?.total || 0;
@@ -26,7 +27,7 @@ export const FilterBar = {
       `;
     }).join('');
 
-    // Regiões Select
+    // Opções de Região
     const regionOptions = regions.map(reg => {
       const isSelected = state.activeRegion === reg.id ? 'selected' : '';
       const regStat = stats.byRegion[reg.id];
@@ -34,9 +35,14 @@ export const FilterBar = {
       return `<option value="${reg.id}" ${isSelected}>${reg.badge || ''} ${reg.name}${countLabel}</option>`;
     }).join('');
 
+    const hasActiveFilters = state.activeCategory !== 'all' || 
+                            state.activeRegion !== 'all_regions' || 
+                            state.statusFilter !== 'all' || 
+                            state.searchQuery !== '';
+
     return `
       <div class="filter-container">
-        <!-- Categories Scroll (visível apenas em Grid ou como atalho) -->
+        <!-- Barra Superior de Categorias -->
         <div class="categories-scroll" id="categories-scroll-container">
           ${categoryChips}
         </div>
@@ -59,25 +65,14 @@ export const FilterBar = {
             </button>
           </div>
 
-          <!-- Region Dropdown & View Mode Switcher -->
-          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-            <!-- View Mode Switcher -->
-            <div class="view-mode-toggle">
-              <button class="view-mode-btn ${state.viewMode === 'grid' ? 'active' : ''}" data-view-mode="grid" title="Visualização em Grid Único">
-                🔲 Grid
-              </button>
-              <button class="view-mode-btn ${state.viewMode === 'sections' ? 'active' : ''}" data-view-mode="sections" title="Visualização por Seções Separadas de Categorias">
-                📑 Seções
-              </button>
-            </div>
-
-            <!-- Region Select -->
-            <select class="custom-select" id="region-select">
+          <!-- Region Dropdown & Clear Filters -->
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <select class="custom-select" id="region-select" aria-label="Filtrar por Região">
               ${regionOptions}
             </select>
 
-            ${(state.activeCategory !== 'all' || state.activeRegion !== 'all_regions' || state.statusFilter !== 'all' || state.searchQuery) ? `
-              <button class="btn btn-ghost" id="clear-filters-btn" style="padding: 6px 10px; font-size: 0.8rem;" title="Limpar todos os filtros">
+            ${hasActiveFilters ? `
+              <button class="btn btn-ghost" id="clear-filters-btn" style="padding: 5px 10px; font-size: 0.78rem;" title="Limpar todos os filtros">
                 ✕ Limpar
               </button>
             ` : ''}
@@ -88,33 +83,31 @@ export const FilterBar = {
   },
 
   attachEvents(container) {
-    // Categorias e Status
     container.addEventListener('click', (e) => {
+      // Categoria
       const chip = e.target.closest('[data-category-id]');
       if (chip) {
         const catId = chip.dataset.categoryId;
         Store.setCategory(catId);
+        return;
       }
 
+      // Status
       const statusPill = e.target.closest('[data-status]');
       if (statusPill) {
         const status = statusPill.dataset.status;
         Store.setStatusFilter(status);
+        return;
       }
 
-      const viewModeBtn = e.target.closest('[data-view-mode]');
-      if (viewModeBtn) {
-        const mode = viewModeBtn.dataset.viewMode;
-        Store.setViewMode(mode);
-      }
-
+      // Limpar Filtros
       if (e.target.id === 'clear-filters-btn') {
         Store.setCategory('all');
         Store.setRegion('all_regions');
         Store.setStatusFilter('all');
         Store.setSearchQuery('');
-        const searchInput = document.getElementById('search-input');
-        if (searchInput) searchInput.value = '';
+        const sInput = document.getElementById('search-input');
+        if (sInput) sInput.value = '';
       }
     });
 

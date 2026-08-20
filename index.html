@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="erdtree">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EldenTrack — Rastreador de Itens, Segredos & Graça | Elden Ring</title>
+  <title>EldenTrack — Site para meus amigos do Elden ring</title>
   
   <!-- SEO & Meta Tags -->
-  <meta name="description" content="Rastreador definitivo de itens, armas lendárias, talismãs, feitiços, cinzas da guerra e segredos de Elden Ring e Shadow of the Erdtree com guias passo a passo e mapa de localização." />
-  <meta name="keywords" content="Elden Ring, EldenTrack, tracker, armas lendárias, talismãs, feitiços, cinzas da guerra, shadow of the erdtree, guia elden ring" />
+  <meta name="description" content="Compêndio definitivo de armas lendárias, talismãs primordiais, feitiços, lágrimas e segredos de Elden Ring e Shadow of the Erdtree com guias passo a passo de rota e combate." />
+  <meta name="keywords" content="Elden Ring, EldenTrack, tracker, armas lendárias, talismãs, feitiços, cinzas da guerra, shadow of the erdtree, guia elden ring, localização armas" />
   <meta name="author" content="EldenTrack" />
-  <meta name="theme-color" content="#0c0e12" />
+  <meta name="theme-color" content="#0e121a" />
 
-  <!-- Google Fonts: Cinzel & Outfit -->
+  <!-- Google Fonts: Cinzel (Serif) & Outfit (Sans) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -25,13 +25,6 @@
     function logMessage(type, msg) {
       console[type](msg);
       window.__eldentrack_logs.push({ type, msg, time: new Date().toLocaleTimeString() });
-      var logPanel = document.getElementById('debug-log-content');
-      if (logPanel) {
-        var line = document.createElement('div');
-        line.style.color = type === 'error' ? '#ef4444' : type === 'warn' ? '#f59e0b' : '#4ade80';
-        line.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
-        logPanel.appendChild(line);
-      }
     }
     window.onerror = function(msg, url, lineNo, columnNo, error) {
       var errText = 'Erro detectado: ' + msg + ' (Linha ' + lineNo + ')';
@@ -47,7 +40,7 @@
 </head>
 <body>
 
-  <!-- Error / Diagnostics Banner (Exibido apenas em caso de erro de execução) -->
+  <!-- Error / Diagnostics Banner (Exibido apenas em caso de exceção crítica) -->
   <div id="error-banner" style="display: none; background: #ef4444; color: #fff; padding: 12px 20px; font-size: 0.9rem; font-family: monospace; z-index: 9999; border-bottom: 2px solid #fff;"></div>
 
   <!-- Header Root -->
@@ -56,22 +49,8 @@
   <!-- Main Application Container -->
   <main class="app-main">
     
-    <!-- Hero / Tracker Banner -->
-    <section class="tracker-banner">
-      <div>
-        <h2 class="banner-heading">
-          <span>✨</span>
-          <span>Desvende os Segredos das Terras Intermédias</span>
-        </h2>
-        <p class="banner-desc">
-          Rastreie armas lendárias, talismãs primordiais, lágrimas larvais e fragmentos da Térvore das Sombras com guias passo a passo de localização.
-        </p>
-      </div>
-
-      <div class="banner-stats-summary" id="banner-stats-root">
-        <!-- Injetado dinamicamente via JS -->
-      </div>
-    </section>
+    <!-- Slim Contextual Hero Bar Root -->
+    <div id="hero-bar-root"></div>
 
     <!-- Filter Bar Root -->
     <section id="filter-bar-root"></section>
@@ -82,9 +61,7 @@
       <div id="skeleton-grid-view" class="skeleton-view hidden"></div>
 
       <!-- Loaded Content View -->
-      <div id="items-grid-view" class="loaded-view active">
-        <div id="items-grid" class="items-grid"></div>
-      </div>
+      <div id="items-grid-view" class="loaded-view active"></div>
     </section>
 
   </main>
@@ -101,7 +78,7 @@
     <p>EldenTrack &copy; 2026 &bull; Desenvolvido para nobres Maculados &bull; Elden Ring &trade; &copy; Bandai Namco / FromSoftware</p>
   </footer>
 
-  <!-- Universal Script Bundle (Executa instantaneamente em file:/// e HTTP sem restrições de CORS) -->
+  <!-- Universal Script Bundle (Executa instantaneamente em file:/// e HTTP) -->
   <script src="./js/eldentrack-bundle.js"></script>
 </body>
 </html>

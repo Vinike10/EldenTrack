@@ -1,6 +1,6 @@
 /* ==========================================================================
-   ELDENTRACK - HEADER COMPONENT
-   Brand Logo, Search Bar, Global Progress Widget & Character Selector
+   ELDENTRACK - HEADER COMPONENT (v4.1)
+   Brand, Search, View Mode Switcher, Theme Switcher & Character Profile
    ========================================================================== */
 
 import { Store } from '../store/state.js';
@@ -10,11 +10,18 @@ export const Header = {
   render(state) {
     const stats = state.stats;
     const curChar = state.activeCharacter;
+    const curTheme = state.theme || 'erdtree';
+    const curView = state.viewMode || 'route';
+
+    // Rótulos de tema
+    const themeLabel = curTheme === 'moonlight' ? '🌙 Luar de Caria' :
+                       curTheme === 'shadow' ? '🔥 Chama das Sombras' :
+                       '🌟 Graça Dourada';
 
     return `
       <header class="app-header">
         <!-- Brand / Logo -->
-        <div class="brand-container" id="brand-home-btn">
+        <div class="brand-container" id="brand-home-btn" title="Voltar ao início">
           <svg class="brand-logo-rune animate-glow-breath" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="42" stroke="currentColor" stroke-width="3" opacity="0.6"/>
             <circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="2"/>
@@ -23,7 +30,7 @@ export const Header = {
           </svg>
           <div>
             <h1 class="brand-title">ELDENTRACK</h1>
-            <div class="brand-subtitle">Rastreador de Segredos & Graça</div>
+            <div class="brand-subtitle">Site para meus amigos do Elden ring</div>
           </div>
         </div>
 
@@ -34,57 +41,155 @@ export const Header = {
             <input type="text" 
                    class="search-input" 
                    id="search-input" 
-                   placeholder="Buscar armas, feitiços, talismãs, locais..." 
+                   placeholder="Buscar armas, magias, talismãs, locais, graças..." 
                    value="${state.searchQuery || ''}" 
                    autocomplete="off" />
             <span class="search-shortcut">Ctrl+K</span>
           </div>
         </div>
 
-        <!-- Actions & Progress -->
+        <!-- Actions: Theme, View Modes, Progress & Profile -->
         <div class="header-actions">
+          <!-- View Modes Switcher -->
+          <div class="view-modes-bar" role="tablist" aria-label="Modo de Visualização">
+            <button class="view-mode-pill ${curView === 'route' ? 'active' : ''}" data-view="route" title="Modo Rota de Campanha (Por Região)">
+              🗺️ Rota
+            </button>
+            <button class="view-mode-pill ${curView === 'grid' ? 'active' : ''}" data-view="grid" title="Modo Grid de Cards">
+              🔲 Cards
+            </button>
+            <button class="view-mode-pill ${curView === 'categories' ? 'active' : ''}" data-view="categories" title="Modo por Categorias">
+              📑 Categorias
+            </button>
+            <button class="view-mode-pill ${curView === 'checklist' ? 'active' : ''}" data-view="checklist" title="Modo Checklist Rápido">
+              📋 Lista
+            </button>
+          </div>
+
+          <!-- Theme Switcher Button -->
+          <button class="theme-selector-btn" id="theme-toggle-btn" title="Alternar Tema Visual (Graça, Luar, Sombras)">
+            ${themeLabel}
+          </button>
+
           <!-- Overall Progress Mini -->
-          <div class="header-progress-box" id="open-stats-btn" style="cursor: pointer;" title="Abrir Dashboard de Estatísticas">
+          <div class="header-progress-box" id="open-stats-btn" style="cursor: pointer;" title="Abrir Estatísticas Detalhadas">
             <div class="progress-circular-mini">
               <svg viewBox="0 0 36 36" style="width: 100%; height: 100%;">
                 <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3.5" />
-                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--gold-primary)" stroke-width="3.5" stroke-dasharray="${stats.percentage}, 100" stroke-linecap="round" />
+                <path id="header-progress-bar-path" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--gold-primary)" stroke-width="3.5" stroke-dasharray="${stats.percentage}, 100" stroke-linecap="round" />
               </svg>
             </div>
-            <span class="progress-text-mini">${stats.percentage}%</span>
+            <span class="progress-text-mini" id="header-progress-text">${stats.percentage}%</span>
           </div>
 
-          <!-- Character / Save Dropdown -->
-          <button class="btn btn-secondary" id="save-menu-btn" title="Gerenciador de Save e Personagens">
-            🛡️ ${curChar?.name || 'Maculado'}
+          <!-- Character Save Menu -->
+          <button class="btn btn-secondary" id="save-menu-btn" style="padding: 6px 12px; font-size: 0.82rem;" title="Gerenciar Save & Maculado">
+            🛡️ ${curChar?.name ? curChar.name.split(' ')[0] : 'Maculado'}
           </button>
         </div>
       </header>
     `;
   },
 
+  update(headerEl, state, eventName) {
+    if (!headerEl || !headerEl.querySelector('.app-header')) {
+      headerEl.innerHTML = this.render(state);
+      this.attachEvents(headerEl);
+      return;
+    }
+
+    // Atualiza apenas os elementos sem destruir o input de busca
+    const stats = state.stats;
+    const curTheme = state.theme || 'erdtree';
+    const curView = state.viewMode || 'route';
+
+    // 1. Atualiza pílulas de modo de exibição
+    const pills = headerEl.querySelectorAll('.view-mode-pill');
+    pills.forEach(pill => {
+      if (pill.dataset.view === curView) {
+        pill.classList.add('active');
+      } else {
+        pill.classList.remove('active');
+      }
+    });
+
+    // 2. Atualiza botão de tema
+    const themeBtn = headerEl.querySelector('#theme-toggle-btn');
+    if (themeBtn) {
+      themeBtn.textContent = curTheme === 'moonlight' ? '🌙 Luar de Caria' :
+                             curTheme === 'shadow' ? '🔥 Chama das Sombras' :
+                             '🌟 Graça Dourada';
+    }
+
+    // 3. Atualiza progresso
+    const progressPath = headerEl.querySelector('#header-progress-bar-path');
+    if (progressPath) {
+      progressPath.setAttribute('stroke-dasharray', `${stats.percentage}, 100`);
+    }
+    const progressText = headerEl.querySelector('#header-progress-text');
+    if (progressText) {
+      progressText.textContent = `${stats.percentage}%`;
+    }
+
+    // 4. Sincroniza valor da busca se disparado externamente (ex: botão limpar)
+    const searchInput = headerEl.querySelector('#search-input');
+    if (searchInput && eventName !== 'search_changed') {
+      if (searchInput.value !== (state.searchQuery || '')) {
+        searchInput.value = state.searchQuery || '';
+      }
+    }
+  },
+
   attachEvents(headerEl) {
-    // Search input com debounce
+    // Search input com debounce otimizado (sem recriar o elemento)
     let searchTimeout = null;
     headerEl.addEventListener('input', (e) => {
       if (e.target.id === 'search-input') {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
           Store.setSearchQuery(e.target.value);
-        }, 150);
+        }, 50);
       }
     });
 
-    // Abrir modal de estatísticas
     headerEl.addEventListener('click', (e) => {
+      // Alternar Modo de Visualização
+      const viewBtn = e.target.closest('[data-view]');
+      if (viewBtn) {
+        const mode = viewBtn.dataset.view;
+        Store.setViewMode(mode);
+        return;
+      }
+
+      // Alternar Tema Visual (Ciclo: erdtree -> moonlight -> shadow -> erdtree)
+      if (e.target.closest('#theme-toggle-btn')) {
+        const curTheme = Store.getState().theme || 'erdtree';
+        const nextTheme = curTheme === 'erdtree' ? 'moonlight' :
+                          curTheme === 'moonlight' ? 'shadow' : 'erdtree';
+        Store.setTheme(nextTheme);
+        Toast.show({
+          title: 'Estética Alterada',
+          message: nextTheme === 'moonlight' ? 'Tema Luar de Caria ativado.' :
+                   nextTheme === 'shadow' ? 'Tema Chama das Sombras ativado.' :
+                   'Tema Graça da Térvore ativado.',
+          icon: nextTheme === 'moonlight' ? '🌙' : nextTheme === 'shadow' ? '🔥' : '🌟'
+        });
+        return;
+      }
+
+      // Abrir estatísticas
       if (e.target.closest('#open-stats-btn')) {
         Store.toggleStatsModal(true);
+        return;
       }
 
+      // Gerenciar save
       if (e.target.closest('#save-menu-btn')) {
         this._showSaveModal();
+        return;
       }
 
+      // Resetar filtros no logo
       if (e.target.closest('#brand-home-btn')) {
         Store.setCategory('all');
         Store.setRegion('all_regions');
@@ -112,29 +217,29 @@ export const Header = {
     const state = Store.getState();
     const modalHtml = `
       <div class="modal-overlay active" id="save-manager-overlay">
-        <div class="modal-content" style="max-width: 520px;">
+        <div class="modal-content" style="max-width: 500px;">
           <button class="modal-close-btn" id="save-modal-close">&times;</button>
           
           <div class="modal-header">
             <div class="modal-icon">📜</div>
             <div>
               <h2 class="modal-title">Gestão de Save & Maculado</h2>
-              <div style="font-size: 0.85rem; color: var(--text-muted);">Backup de progresso e builds</div>
+              <div style="font-size: 0.82rem; color: var(--text-muted);">Backup seguro do seu progresso</div>
             </div>
           </div>
 
-          <div style="margin-bottom: 20px;">
-            <div class="modal-section-title">Personagem Ativo</div>
-            <div style="background: rgba(0,0,0,0.3); padding: 14px; border-radius: var(--radius-md); border: 1px solid rgba(212,175,55,0.15); display: flex; justify-content: space-between; align-items: center;">
+          <div style="margin-bottom: 18px;">
+            <div class="modal-section-title" style="font-size: 0.95rem;">Personagem Ativo</div>
+            <div style="background: rgba(0,0,0,0.35); padding: 12px 16px; border-radius: var(--radius-md); border: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;">
               <div>
-                <strong style="color: var(--gold-bright); font-size: 1.05rem;">${state.activeCharacter.name}</strong>
-                <div style="font-size: 0.8rem; color: var(--text-muted);">${state.activeCharacter.build}</div>
+                <strong style="color: var(--gold-light); font-size: 1rem;">${state.activeCharacter.name}</strong>
+                <div style="font-size: 0.78rem; color: var(--text-muted);">${state.activeCharacter.build}</div>
               </div>
-              <span class="category-chip" style="font-size: 0.78rem;">${state.stats.acquired} itens coletados</span>
+              <span class="category-chip" style="font-size: 0.75rem;">${state.stats.acquired} coletados</span>
             </div>
           </div>
 
-          <div class="modal-section-title">Backup & Sincronização</div>
+          <div class="modal-section-title" style="font-size: 0.95rem;">Backup & Sincronização</div>
           <div style="display: flex; gap: 10px; margin-bottom: 20px;">
             <button class="btn btn-gold" id="export-save-btn" style="flex: 1;">
               💾 Exportar Save (JSON)
@@ -145,8 +250,8 @@ export const Header = {
             </label>
           </div>
 
-          <div class="modal-section-title" style="color: var(--status-missing);">Zona de Risco</div>
-          <button class="btn btn-secondary" id="reset-progress-btn" style="width: 100%; border-color: rgba(239, 68, 68, 0.4); color: var(--status-missing);">
+          <div class="modal-section-title" style="font-size: 0.95rem; color: var(--status-missing);">Zona de Risco</div>
+          <button class="btn btn-secondary" id="reset-progress-btn" style="width: 100%; border-color: rgba(244, 63, 94, 0.4); color: var(--status-missing);">
             ⚠️ Redefinir Todo o Progresso
           </button>
         </div>
@@ -158,7 +263,6 @@ export const Header = {
     wrapper.innerHTML = modalHtml;
     document.body.appendChild(wrapper);
 
-    // Eventos do modal de save
     wrapper.addEventListener('click', (e) => {
       if (e.target.id === 'save-modal-close' || e.target.id === 'save-manager-overlay') {
         wrapper.remove();
@@ -168,18 +272,18 @@ export const Header = {
         Store.exportSave();
         Toast.show({
           title: '💾 Save Exportado',
-          message: 'Arquivo de backup gerado com sucesso.',
+          message: 'Arquivo JSON gerado com sucesso.',
           icon: '✨'
         });
       }
 
       if (e.target.id === 'reset-progress-btn') {
-        if (confirm('Tem certeza de que deseja resetar todo o progresso do rastreador? Esta ação não pode ser desfeita.')) {
+        if (confirm('Tem certeza de que deseja resetar todo o progresso do rastreador?')) {
           Store.resetAllProgress();
           wrapper.remove();
           Toast.show({
             title: 'Progresso Redefinido',
-            message: 'Todas as graças e itens foram reiniciados.',
+            message: 'Todas as graças foram reiniciadas.',
             icon: '↩️'
           });
         }

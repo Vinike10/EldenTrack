@@ -1,6 +1,6 @@
 /* ==========================================================================
-   ELDENTRACK - MAIN STYLES & LAYOUT
-   Global Layout, Reset, Responsive Grid and Theme Environment
+   ELDENTRACK - MAIN STYLES & CORE LAYOUT
+   Global Layout, Dynamic Theme Backgrounds, Responsive Grid & Shell
    ========================================================================== */
 
 @import url('./design-tokens.css');
@@ -26,9 +26,9 @@ body {
   font-family: var(--font-sans);
   background-color: var(--bg-abyss);
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.08) 0%, transparent 60%),
-    radial-gradient(circle at 100% 100%, rgba(168, 130, 32, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 0% 100%, rgba(230, 57, 70, 0.03) 0%, transparent 50%);
+    radial-gradient(circle at 50% -10%, var(--gold-glow) 0%, transparent 55%),
+    radial-gradient(circle at 95% 100%, rgba(56, 189, 248, 0.04) 0%, transparent 45%),
+    radial-gradient(circle at 5% 90%, rgba(244, 63, 94, 0.03) 0%, transparent 45%);
   background-attachment: fixed;
   color: var(--text-primary);
   min-height: 100vh;
@@ -38,9 +38,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  transition: background-color var(--dur-slow) var(--ease-smooth);
 }
 
-/* --- Custom Scrollbar --- */
+/* --- Custom Scrollbars --- */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -51,7 +52,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.25);
+  background: rgba(223, 192, 118, 0.22);
   border-radius: var(--radius-full);
   border: 2px solid var(--bg-obsidian);
 }
@@ -66,13 +67,14 @@ body {
   top: 0;
   z-index: 500;
   height: var(--header-height);
-  background: rgba(12, 14, 18, 0.85);
+  background: var(--glass-bg-dense);
   backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 28px;
+  padding: 0 24px;
+  gap: 16px;
   transition: all var(--dur-normal) var(--ease-smooth);
 }
 
@@ -82,32 +84,34 @@ body {
   gap: 12px;
   text-decoration: none;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .brand-logo-rune {
-  width: 38px;
-  height: 38px;
-  color: var(--gold-bright);
+  width: 36px;
+  height: 36px;
+  color: var(--gold-primary);
   filter: drop-shadow(0 0 10px var(--gold-glow));
   transition: transform var(--dur-slow) var(--ease-elastic);
 }
 
 .brand-container:hover .brand-logo-rune {
-  transform: rotate(45deg) scale(1.1);
+  transform: rotate(45deg) scale(1.08);
 }
 
 .brand-title {
   font-family: var(--font-serif);
-  font-size: 1.45rem;
+  font-size: 1.35rem;
   font-weight: 700;
-  letter-spacing: 1.5px;
-  background: linear-gradient(135deg, #ffffff 0%, var(--gold-bright) 60%, var(--gold-deep) 100%);
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, #ffffff 0%, var(--gold-light) 50%, var(--gold-deep) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  line-height: 1.1;
 }
 
 .brand-subtitle {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: var(--gold-muted);
@@ -116,166 +120,165 @@ body {
 .header-center {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex: 1;
   max-width: 520px;
-  margin: 0 24px;
+  margin: 0 auto;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 /* Overall Progress Widget on Header */
 .header-progress-box {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   background: var(--bg-surface);
   border: 1px solid var(--glass-border);
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: var(--radius-full);
+  transition: all var(--dur-fast) var(--ease-smooth);
+}
+
+.header-progress-box:hover {
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 12px var(--gold-glow);
+  transform: translateY(-1px);
 }
 
 .progress-circular-mini {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   position: relative;
 }
 
 .progress-text-mini {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: var(--gold-bright);
+  color: var(--gold-light);
 }
 
-/* --- Main Layout --- */
+/* --- Main Layout Container --- */
 .app-main {
   flex: 1;
   max-width: var(--max-content-width);
   width: 100%;
   margin: 0 auto;
-  padding: 28px 24px 60px 24px;
+  padding: 20px 24px 60px 24px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 20px;
 }
 
-/* Hero / Header Banner */
-.tracker-banner {
-  background: linear-gradient(135deg, rgba(18, 21, 28, 0.95) 0%, rgba(24, 28, 37, 0.85) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  border-radius: var(--radius-xl);
-  padding: 24px 32px;
+/* --- Slim Contextual Hero Bar --- */
+.slim-hero-bar {
+  background: linear-gradient(135deg, rgba(20, 25, 36, 0.85) 0%, rgba(14, 18, 26, 0.95) 100%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 14px 22px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
 }
 
-.tracker-banner::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -10%;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.12) 0%, transparent 70%);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.banner-heading {
-  font-family: var(--font-serif);
-  font-size: 1.7rem;
-  color: var(--gold-bright);
-  margin-bottom: 6px;
+.hero-left-info {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.banner-desc {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  max-width: 680px;
-}
-
-.banner-stats-summary {
+.hero-badge-icon {
+  font-size: 1.5rem;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface-raised);
+  border: 1px solid var(--glass-border);
   display: flex;
-  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.stat-pill-box {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  border-radius: var(--radius-lg);
-  padding: 12px 18px;
-  text-align: center;
-  min-width: 100px;
-}
-
-.stat-pill-val {
+.hero-title {
   font-family: var(--font-serif);
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--gold-bright);
+  font-size: 1.15rem;
+  color: var(--gold-light);
+  font-weight: 600;
 }
 
-.stat-pill-lbl {
-  font-size: 0.74rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+.hero-subtitle {
+  font-size: 0.8rem;
   color: var(--text-muted);
 }
 
-/* Grid Layout */
+.hero-stats-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-stat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--glass-border-subtle);
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.hero-stat-chip strong {
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+/* --- Grids & Views --- */
 .items-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
   width: 100%;
 }
 
 /* Empty State */
 .empty-state {
   text-align: center;
-  padding: 60px 20px;
+  padding: 50px 20px;
   background: var(--bg-surface);
-  border: 1px dashed rgba(212, 175, 55, 0.2);
+  border: 1px dashed var(--glass-border);
   border-radius: var(--radius-xl);
-  margin: 20px 0;
+  margin: 16px 0;
+  width: 100%;
 }
 
 .empty-icon {
-  font-size: 3rem;
+  font-size: 2.8rem;
   color: var(--gold-muted);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .empty-title {
   font-family: var(--font-serif);
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   color: var(--gold-light);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .empty-desc {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--text-secondary);
-}
-
-/* Stats Drawer / Modal */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 18px;
-  margin-top: 16px;
 }
 
 /* Footer */
@@ -283,14 +286,14 @@ body {
   margin-top: auto;
   border-top: 1px solid var(--glass-border);
   background: var(--bg-obsidian);
-  padding: 24px;
+  padding: 20px;
   text-align: center;
   color: var(--text-muted);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
 }
 
 .app-footer a {
-  color: var(--gold-muted);
+  color: var(--gold-primary);
   text-decoration: none;
   transition: color var(--dur-fast);
 }
@@ -305,19 +308,15 @@ body {
     padding: 0 16px;
   }
   
-  .tracker-banner {
+  .slim-hero-bar {
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
+    gap: 12px;
   }
   
-  .banner-stats-summary {
+  .hero-stats-strip {
     width: 100%;
     justify-content: space-between;
-  }
-  
-  .stat-pill-box {
-    flex: 1;
   }
 }
 
@@ -330,12 +329,7 @@ body {
     grid-template-columns: 1fr;
   }
   
-  .sub-filters-row {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .status-pills {
-    overflow-x: auto;
+  .brand-subtitle {
+    display: none;
   }
 }
