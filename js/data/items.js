@@ -7,7 +7,7 @@ export const ITEMS_DATA = [
   /* --- RAPIEIRAS & ESPADAS ESTOCANTES --- */
   {
     id: 'w_antspur_rapier',
-    name: 'Rapieira de Antspur (Antspur Rapier)',
+    name: 'Rapieira de Podridão (Antspur Rapier)',
     nameEn: 'Antspur Rapier',
     category: 'weapons',
     subtype: 'Rapieiras & Estocadas',

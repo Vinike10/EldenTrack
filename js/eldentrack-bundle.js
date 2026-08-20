@@ -53,7 +53,7 @@
     /* --- RAPIEIRAS & ESPADAS ESTOCANTES (Thrusting Swords) --- */
     {
       id: 'w_antspur_rapier',
-      name: 'Rapieira de Antspur (Antspur Rapier)',
+      name: 'Rapieira de Podridão (Antspur Rapier)',
       nameEn: 'Antspur Rapier',
       category: 'weapons',
       subtype: 'Rapieiras & Estocadas',
