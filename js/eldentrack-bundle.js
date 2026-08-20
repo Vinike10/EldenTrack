@@ -2085,24 +2085,33 @@
     filterItems({ category = 'all', region = 'all_regions', search = '', query = '', status = 'all', acquiredIds = [], wishlistIds = [] }) {
       const rawQuery = search || query || '';
       const clean = normalizeText(rawQuery);
-      const queryWords = clean ? clean.split(/\s+/).filter(Boolean) : [];
+      // Divide em palavras-chave, ignorando tokens de 1-2 letras (stop words)
+      const queryWords = clean ? clean.split(/\s+/).filter(w => w.length >= 2) : [];
 
-      let aliasTerms = [];
-      if (clean) {
+      // Monta aliases: apenas frases completas que combinem com a busca (não tokens soltos)
+      const matchingAliasGroups = [];
+      if (clean && clean.length >= 3) {
         for (const [enKey, ptList] of Object.entries(BILINGUAL_DICTIONARY)) {
           const normEn = normalizeText(enKey);
-          if (normEn.includes(clean) || clean.includes(normEn) || (clean.length >= 4 && levenshteinDistance(clean, normEn) <= 2)) {
-            aliasTerms.push(normEn, ...ptList.map(normalizeText));
-          }
-          for (const pt of ptList) {
-            const normPt = normalizeText(pt);
-            if (normPt.includes(clean) || clean.includes(normPt) || (clean.length >= 4 && levenshteinDistance(clean, normPt) <= 2)) {
-              aliasTerms.push(normEn, normPt);
-            }
+          const allAliases = [normEn, ...ptList.map(normalizeText)];
+          
+          // Verifica se a busca bate com ALGUM alias deste grupo
+          const groupMatches = allAliases.some(alias => {
+            if (alias.length < 3) return false;
+            // Match direto (substring nos dois sentidos) ou Levenshtein para queries >= 4 chars
+            if (alias.includes(clean) || clean.includes(alias)) return true;
+            if (clean.length >= 4 && alias.length >= 4 && levenshteinDistance(clean, alias) <= 1) return true;
+            // Testa token a token para frases compostas (ex: "rios de sangue" vs "sangue")
+            const aliasWords = alias.split(/\s+/).filter(w => w.length >= 3);
+            return aliasWords.some(aw => aw.includes(clean) || clean.includes(aw) || (clean.length >= 4 && aw.length >= 4 && levenshteinDistance(clean, aw) <= 1));
+          });
+
+          if (groupMatches) {
+            // Guarda todas as frases/tokens relevantes DESTE grupo para busca
+            matchingAliasGroups.push(...allAliases);
           }
         }
       }
-      aliasTerms = [...new Set(aliasTerms.filter(Boolean))];
 
       return ITEMS_DATA.filter(item => {
         if (category !== 'all' && item.category !== category) return false;
@@ -2115,23 +2124,35 @@
         if (status === 'missing' && isAcquired) return false;
         if (status === 'wishlist' && !isWishlisted) return false;
 
-        if (clean) {
-          const rawItemText = `
-            ${item.name} ${item.nameEn || ''} ${item.subtype || ''} ${item.location || ''}
-            ${item.nearestGrace || ''} ${item.lore || ''} ${item.guide || ''} ${item.region || ''}
-            ${item.secretType || ''} ${item.combatStats?.skill || ''} ${item.combatStats?.damageType || ''}
-            ${item.combatStats?.passive || ''}
-          `;
+        if (clean && queryWords.length > 0) {
+          // Texto do item normalizado
+          const rawItemText = [
+            item.name, item.nameEn || '', item.subtype || '', item.location || '',
+            item.nearestGrace || '', item.lore || '', item.guide || '', item.region || '',
+            item.secretType || '', item.combatStats?.skill || '',
+            item.combatStats?.damageType || '', item.combatStats?.passive || ''
+          ].join(' ');
           const itemText = normalizeText(rawItemText);
-          const itemTokens = itemText.split(/\s+/).filter(Boolean);
+          const itemTokens = itemText.split(/\s+/).filter(w => w.length >= 2);
 
-          const allWordsMatch = queryWords.length > 0 && queryWords.every(word => isFuzzyTokenMatch(word, itemTokens));
-          const aliasMatch = aliasTerms.length > 0 && aliasTerms.some(term => {
-            const termWords = term.split(/\s+/).filter(Boolean);
-            return termWords.some(tw => isFuzzyTokenMatch(tw, itemTokens));
-          });
+          // 1. Todas as palavras da busca devem aparecer no item (match direto)
+          const directMatch = queryWords.every(word => isFuzzyTokenMatch(word, itemTokens));
+          if (directMatch) return true;
 
-          if (!allWordsMatch && !aliasMatch) return false;
+          // 2. Algum alias do grupo correspondente à busca aparece como frase no texto do item
+          if (matchingAliasGroups.length > 0) {
+            const aliasMatch = matchingAliasGroups.some(alias => {
+              if (!alias || alias.length < 3) return false;
+              // A frase do alias deve aparecer como substring no itemText (não apenas token solto)
+              if (itemText.includes(alias)) return true;
+              // Para aliases de 1 palavra com >= 5 letras, aceita match fuzzy no texto completo
+              const aliasWords = alias.split(/\s+/).filter(w => w.length >= 5);
+              return aliasWords.length > 0 && aliasWords.every(aw => isFuzzyTokenMatch(aw, itemTokens));
+            });
+            if (aliasMatch) return true;
+          }
+
+          return false;
         }
 
         return true;
