@@ -1,0 +1,204 @@
+/* ==========================================================================
+   ELDENTRACK - MOTION & ANIMATION SYSTEM
+   Physical easing, staggered cascades, rune glows and grace pulses.
+   ========================================================================== */
+
+/* --- Keyframe Animations --- */
+
+/* Entradas suaves de elementos */
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes fadeOutScale {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+}
+
+@keyframes slideDownFade {
+  0% {
+    opacity: 0;
+    transform: translateY(-24px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideUpFade {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pulso da Graça (Site of Grace Discovered) */
+@keyframes gracePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 16px rgba(212, 175, 55, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+  }
+}
+
+@keyframes goldGlowBreath {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 18px rgba(246, 226, 122, 0.8));
+  }
+}
+
+/* Brilho e reflexo metálico rúnico */
+@keyframes runicSheen {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Rotação sutil de Runas e Glifos */
+@keyframes rotateRune {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Checkmark Celebration Pop */
+@keyframes checkPop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Toast Slide In */
+@keyframes toastEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  60% {
+    transform: translateY(-4px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toastExit {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.92);
+  }
+}
+
+/* Skeleton Loading Shimmer */
+@keyframes skeletonWave {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Progress Fill Transition */
+@keyframes progressGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(246, 226, 122, 0.9);
+  }
+}
+
+/* --- Classes Utilitárias de Animação --- */
+
+.animate-fade-in {
+  animation: fadeInScale var(--dur-normal) var(--ease-smooth) forwards;
+}
+
+.animate-slide-down {
+  animation: slideDownFade var(--dur-normal) var(--ease-smooth) forwards;
+}
+
+.animate-slide-up {
+  animation: slideUpFade var(--dur-normal) var(--ease-smooth) forwards;
+}
+
+.animate-grace-pulse {
+  animation: gracePulse 1.8s infinite;
+}
+
+.animate-glow-breath {
+  animation: goldGlowBreath 3s infinite ease-in-out;
+}
+
+.animate-rotate-slow {
+  animation: rotateRune 24s linear infinite;
+}
+
+.animate-check-pop {
+  animation: checkPop var(--dur-normal) var(--ease-elastic) forwards;
+}
+
+/* Cascata escalonada para grids de itens */
+.stagger-item {
+  opacity: 0;
+  animation: fadeInScale var(--dur-slow) var(--ease-smooth) forwards;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 25ms; }
+.stagger-item:nth-child(2) { animation-delay: 50ms; }
+.stagger-item:nth-child(3) { animation-delay: 75ms; }
+.stagger-item:nth-child(4) { animation-delay: 100ms; }
+.stagger-item:nth-child(5) { animation-delay: 125ms; }
+.stagger-item:nth-child(6) { animation-delay: 150ms; }
+.stagger-item:nth-child(7) { animation-delay: 175ms; }
+.stagger-item:nth-child(8) { animation-delay: 200ms; }
+.stagger-item:nth-child(9) { animation-delay: 225ms; }
+.stagger-item:nth-child(10) { animation-delay: 250ms; }
+.stagger-item:nth-child(11) { animation-delay: 275ms; }
+.stagger-item:nth-child(12) { animation-delay: 300ms; }
+.stagger-item:nth-child(n+13) { animation-delay: 320ms; }

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EldenTrack — Rastreador de Itens, Segredos & Graça | Elden Ring</title>
+  
+  <!-- SEO & Meta Tags -->
+  <meta name="description" content="Rastreador definitivo de itens, armas lendárias, talismãs, feitiços, cinzas da guerra e segredos de Elden Ring e Shadow of the Erdtree com guias passo a passo e mapa de localização." />
+  <meta name="keywords" content="Elden Ring, EldenTrack, tracker, armas lendárias, talismãs, feitiços, cinzas da guerra, shadow of the erdtree, guia elden ring" />
+  <meta name="author" content="EldenTrack" />
+  <meta name="theme-color" content="#0c0e12" />
+
+  <!-- Google Fonts: Cinzel & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="./css/main.css" />
+</head>
+<body>
+
+  <!-- Header Root -->
+  <div id="header-root"></div>
+
+  <!-- Main Application Container -->
+  <main class="app-main">
+    
+    <!-- Hero / Tracker Banner -->
+    <section class="tracker-banner">
+      <div>
+        <h2 class="banner-heading">
+          <span>✨</span>
+          <span>Desvende os Segredos das Terras Intermédias</span>
+        </h2>
+        <p class="banner-desc">
+          Rastreie armas lendárias, talismãs primordiais, lágrimas larvais e fragmentos da Térvore das Sombras com guias passo a passo de localização.
+        </p>
+      </div>
+
+      <div class="banner-stats-summary" id="banner-stats-root">
+        <!-- Injetado dinamicamente via JS -->
+      </div>
+    </section>
+
+    <!-- Filter Bar Root -->
+    <section id="filter-bar-root"></section>
+
+    <!-- Content / Grid Area with Skeleton Lazy Loading Container -->
+    <section class="lazy-container">
+      <!-- Skeleton Loading State View -->
+      <div id="skeleton-grid-view" class="skeleton-view hidden"></div>
+
+      <!-- Loaded Content View -->
+      <div id="items-grid-view" class="loaded-view active">
+        <div id="items-grid" class="items-grid"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modals & Overlays Root -->
+  <div id="modal-root"></div>
+  <div id="stats-modal-root"></div>
+
+  <!-- Toast Container Root -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>EldenTrack &copy; 2026 &bull; Desenvolvido para nobres Maculados &bull; Elden Ring &trade; &copy; Bandai Namco / FromSoftware</p>
+  </footer>
+
+  <!-- Application Bootstrap -->
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

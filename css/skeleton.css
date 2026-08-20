@@ -1,0 +1,136 @@
+/* ==========================================================================
+   ELDENTRACK - SKELETON LAZY LOADING SYSTEM
+   Shimmering Golden-Ash Placeholder Frames for Smooth Transitions
+   ========================================================================== */
+
+/* Base Skeleton Shimmer */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(24, 28, 37, 0.8) 0%,
+    rgba(212, 175, 55, 0.12) 50%,
+    rgba(24, 28, 37, 0.8) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeletonWave 1.6s infinite ease-in-out;
+  border-radius: var(--radius-sm);
+  position: relative;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Skeleton Elements */
+.skeleton-circle {
+  border-radius: var(--radius-full);
+}
+
+.skeleton-text {
+  height: 14px;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.skeleton-text.short {
+  width: 45%;
+}
+
+.skeleton-text.medium {
+  width: 70%;
+}
+
+.skeleton-title {
+  height: 22px;
+  width: 80%;
+  margin-bottom: 12px;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-badge {
+  height: 22px;
+  width: 64px;
+  border-radius: var(--radius-full);
+  display: inline-block;
+}
+
+/* Skeleton Card Structure */
+.skeleton-card {
+  background: var(--bg-surface);
+  border: 1px solid rgba(212, 175, 55, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 210px;
+  position: relative;
+}
+
+.skeleton-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.skeleton-card-icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+}
+
+.skeleton-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.skeleton-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Skeleton Stats Widget */
+.skeleton-stat-ring {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+.skeleton-stat-item {
+  height: 48px;
+  border-radius: var(--radius-md);
+  margin-bottom: 10px;
+}
+
+/* Smooth Fade/Crossfade Container */
+.lazy-container {
+  position: relative;
+  min-height: 280px;
+}
+
+.skeleton-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 18px;
+  width: 100%;
+  transition: opacity var(--dur-normal) var(--ease-smooth);
+}
+
+.skeleton-view.hidden {
+  display: none;
+  opacity: 0;
+}
+
+.loaded-view {
+  opacity: 0;
+  transition: opacity var(--dur-normal) var(--ease-smooth);
+}
+
+.loaded-view.active {
+  opacity: 1;
+}
